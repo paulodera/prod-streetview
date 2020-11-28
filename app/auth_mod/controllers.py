@@ -1,5 +1,7 @@
 from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for
 
+from flask_login import login_user, logout_user, login_required
+
 from werkzeug.security import check_password_hash
 
 from app import db
@@ -13,7 +15,10 @@ auth_mod = Blueprint('auth', __name__, url_prefix='/auth', template_folder='temp
 
 @auth_mod.route('/signin', methods=['POST', 'GET'])
 def signin():
-
+    """
+    administrator dashboard sign in controller
+    :return:
+    """
     form = LoginForm(request.form)
 
     if form.validate_on_submit():
@@ -22,12 +27,25 @@ def signin():
 
         if user and check_password_hash(user.password, form.password.data):
 
-            session['user_id'] = user.id
+            login_user(user)
 
             flash('Welcome %s' % user.username)
 
-            return redirect(url_for('auth.dashboard'))
+            return redirect(url_for('auth.home'))
 
         flash('Wrong username and/or password', 'error-message')
 
     return render_template('auth/signin.html', form=form)
+
+
+@auth_mod.route('/home', methods=['GET'])
+@login_required
+def home():
+    return render_template('treasure/dashboard.html')
+
+
+@auth_mod.route('/logout', methods=['GET'])
+@login_required
+def logout():
+    logout_user()
+    return redirect('signin')

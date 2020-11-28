@@ -14,3 +14,4 @@ class LoginForm(Form):
     )
     submit = SubmitField('Log In')
 
+

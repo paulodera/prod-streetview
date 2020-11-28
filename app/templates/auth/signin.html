@@ -36,13 +36,25 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-4 col-md-6 col-sm-8 ml-auto mr-auto">
-            <form class="form" method="POST" action="." role="form" accept-charset="UTF-8">
+            <form class="form" method="POST" action="/auth/signin" role="form" accept-charset="UTF-8">
               {{form.csrf_token}}
               <div class="card card-login card-hidden">
                 <div class="card-header card-header-success text-center">
                   <h4 class="card-title">Login</h4>
                 </div>
                 <div class="card-body ">
+                  <p class="card-description text-center">
+                    {% with messages = get_flashed_messages() %}
+                      {% if messages %}
+                        <ul class="text-danger font-weight-bold" style="list-style: none;">
+                        {% for message in messages %}
+                          <li>{{ message }}</li>
+                        {% endfor %}
+                        </ul>
+                      {% endif %}
+                    {% endwith %}
+                  </p>
+
                   <span class="bmd-form-group"> <!-- username -->
                     <div class="input-group">
                       <div class="input-group-prepend">
