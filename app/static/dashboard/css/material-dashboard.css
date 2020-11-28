@@ -12,7 +12,17 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
  */
-/*     brand Colors              */
+/*   Futura font     */
+@font-face {
+  font-family: 'Futura Book';
+  src: url('../fonts/FuturaMedium.otf');
+}
+@font-face {
+  font-family: 'Futura Heavy';
+  src: url('../fonts/FuturaBold.otf');
+}
+
+/*     brand Colors          r    */
 .card {
   font-size: .875rem; }
 
@@ -22,7 +32,7 @@
   box-sizing: border-box; }
 
 html {
-  font-family: sans-serif;
+  font-family: 'Futura Book' !important;
   line-height: 1.15;
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
@@ -37,7 +47,8 @@ article, aside, dialog, figcaption, figure, footer, header, hgroup, main, nav, s
 
 body {
   margin: 0;
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-family: 'Furura Book' !important;
+  /*"Roboto", "Helvetica", , sans-serif;*/
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -333,7 +344,7 @@ template {
   box-sizing: border-box; }
 
 html {
-  font-family: sans-serif;
+  font-family: 'Futura Book';
   line-height: 1.15;
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
@@ -348,7 +359,8 @@ article, aside, dialog, figcaption, figure, footer, header, hgroup, main, nav, s
 
 body {
   margin: 0;
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-family: 'Futura Book' !important;
+          /*"Roboto", "Helvetica", "Arial", sans-serif;*/
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -8080,7 +8092,7 @@ fieldset[disabled][disabled] .form-control, .form-control.disabled, .form-contro
 
 .form-control.form-control-danger,
 .is-focused .form-control.form-control-danger {
-  background-image: linear-gradient(to top, #9c27b0 2px, rgba(156, 39, 176, 0) 2px), linear-gradient(to top, #d2d2d2 1px, rgba(210, 210, 210, 0) 1px), "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MTIgNzkyIj48cGF0aCBmaWxsPSIjZDk1MzRmIiBkPSJNNDQ3IDU0NC40Yy0xNC40IDE0LjQtMzcuNiAxNC40LTUyIDBsLTg5LTkyLjctODkgOTIuN2MtMTQuNSAxNC40LTM3LjcgMTQuNC01MiAwLTE0LjQtMTQuNC0xNC40LTM3LjYgMC01Mmw5Mi40LTk2LjMtOTIuNC05Ni4zYy0xNC40LTE0LjQtMTQuNC0zNy42IDAtNTJzMzcuNi0xNC4zIDUyIDBsODkgOTIuOCA4OS4yLTkyLjdjMTQuNC0xNC40IDM3LjYtMTQuNCA1MiAwIDE0LjMgMTQuNCAxNC4zIDM3LjYgMCA1MkwzNTQuNiAzOTZsOTIuNCA5Ni40YzE0LjQgMTQuNCAxNC40IDM3LjYgMCA1MnoiLz48L3N2Zz4="; }
+  background-image: linear-gradient(to top, #000000 2px, rgba(156, 39, 176, 0) 2px), linear-gradient(to top, #d2d2d2 1px, rgba(210, 210, 210, 0) 1px), "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MTIgNzkyIj48cGF0aCBmaWxsPSIjZDk1MzRmIiBkPSJNNDQ3IDU0NC40Yy0xNC40IDE0LjQtMzcuNiAxNC40LTUyIDBsLTg5LTkyLjctODkgOTIuN2MtMTQuNSAxNC40LTM3LjcgMTQuNC01MiAwLTE0LjQtMTQuNC0xNC40LTM3LjYgMC01Mmw5Mi40LTk2LjMtOTIuNC05Ni4zYy0xNC40LTE0LjQtMTQuNC0zNy42IDAtNTJzMzcuNi0xNC4zIDUyIDBsODkgOTIuOCA4OS4yLTkyLjdjMTQuNC0xNC40IDM3LjYtMTQuNCA1MiAwIDE0LjMgMTQuNCAxNC4zIDM3LjYgMCA1MkwzNTQuNiAzOTZsOTIuNCA5Ni40YzE0LjQgMTQuNCAxNC40IDM3LjYgMCA1MnoiLz48L3N2Zz4="; }
 
 .is-focused .valid-feedback {
   display: none;
