@@ -84,18 +84,19 @@
       </div>
     </div>
   </div>
-  {% block scripts %}
+
   <!--   Core JS Files   -->
   <script src="{{url_for('static', filename='dashboard/js/core/jquery.min.js')}}"></script>
   <script src="{{url_for('static', filename='dashboard/js/core/popper.min.js')}}"></script>
   <script src="{{url_for('static', filename='dashboard/js/core/bootstrap-material-design.min.js')}}"></script>
   <script src="{{url_for('static', filename='dashboard/js/plugins/perfect-scrollbar.jquery.min.js')}}"></script>
-
   <!--  Notifications Plugin    -->
   <script src="{{url_for('static', filename='dashboard/js/plugins/bootstrap-notify.js')}}"></script>
-
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="{{url_for('static', filename='dashboard/js/material-dashboard.js')}}" type="text/javascript"></script>
+  <script src="{{ url_for('static', filename='dashboard/demo/demo.js') }}"></script>
+
+  {% block scripts %}
   {% endblock %}
 </body>
 

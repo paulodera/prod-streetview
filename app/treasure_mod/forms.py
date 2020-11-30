@@ -1,5 +1,5 @@
 from flask_wtf import Form
-from wtforms import StringField, IntegerField
+from wtforms import StringField, IntegerField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired
 
 
@@ -11,12 +11,12 @@ class RegisterTreasure(Form):
         'Hunt name',
         validators=[DataRequired()]
     )
-    description = StringField(
+    description = TextAreaField(
         'Hunt description'
     )
     time = IntegerField(
         'Total time',
-        validators=[DataRequired]
+        validators=[DataRequired()]
     )
-
+    submit = SubmitField('Add Treasure')
 

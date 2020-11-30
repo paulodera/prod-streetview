@@ -31,17 +31,11 @@ def signin():
 
             flash('Welcome %s' % user.username)
 
-            return redirect(url_for('auth.home'))
+            return redirect('/treasure')
 
         flash('Wrong username and/or password', 'error-message')
 
     return render_template('auth/signin.html', form=form)
-
-
-@auth_mod.route('/home', methods=['GET'])
-@login_required
-def home():
-    return render_template('treasure/dashboard.html')
 
 
 @auth_mod.route('/logout', methods=['GET'])

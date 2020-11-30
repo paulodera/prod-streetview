@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Going beyond requires your street smarts</title>
+	<meta name="Resource-type" content="Document" />
+	<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='streetview/images/apple-touch-icon.png') }}">
+	<link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='streetview/images/favicon-32x32.png') }}">
+	<link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='streetview/images/favicon-16x16.png') }}">
+	<link rel="icon" type="image/ico" href="{{ url_for('static', filename='streetview/images/favicon.ico') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='streetview/css/main.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='streetview/css/featherlight.css') }}">
+	<style>
+		/* FOR PRESENTATION PURPOSE */
+		.content_section{
+			background-position: center center;
+			background-repeat: no-repeat;
+			background-size: cover;
+		}
+	</style>
+</head>
+<body>
+	<div class="header_section">
+		<div class="default_header">
+			<a href="javascript:;" class="page_logo splash_logo"><img src="{{ url_for('static', filename='streetview/images/logo.svg') }}"/></a>
+			<h1>Going beyond requires your street smarts</h1>
+			<a href="#" class="trigger" id="menuTrigger"><span>Menu</span><div></div></a>
+		</div>
+		<div class="second_header">
+			{% block game_tray %}
+
+				{# game tray goes here #}
+
+			{% endblock %}
+		</div>
+		<ul class="dropdown_section">
+			<li  data-featherlight="#play">
+				<h2>01</h2>
+				<span>How to Play</span>
+			</li>
+			<li  data-featherlight="#hunt">
+				<h2>02</h2>
+				<span>Street hunts</span>
+			</li>
+			<li data-featherlight="#prize">
+				<h2>03</h2>
+				<span>Daily prize</span>
+			</li>
+			<li data-featherlight="#terms">
+				<h2>04</h2>
+				<span>T&Cs</span>
+			</li>
+		</ul>
+	</div>
+	<!-- <div class="content_section" >  style="background-image: url('assets/images/Screenshot_1.jpg');" -->
+        {% block content %}
+            
+        {% endblock %}
+	<!--	</div>-->
+	<ul class="footer_section">
+		<li>
+			<div class="copyright">Copyright 2020. All rights reserved</div>
+		</li>
+		<li>
+			<div class="google_logo"><a href="https://www.google.com/streetview/" target="_blank"><img src="{{ url_for('static', filename='streetview/images/Group 40.svg') }}" alt=""></a></div>
+		</li>
+	</ul>
+	<div class="lightbox" id="play">
+		<h2>01</h2>
+		<h3><span>WELCOME</span>How to play</h3>
+		<div class="content_pod-a">Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor</div>
+	</div>
+	<div class="lightbox" id="hunt">
+		<h2>02</h2>
+		<h3><span>EXPLORE</span>Street hunts</h3>
+		<ul class="content_pod-b">
+			<li class="default">
+				<a href="#" class="btn_green btn">
+					<span>PLAY</span>
+					<h6>Street Hunt Name 01</h6>
+					<div><img src="{{ url_for('static', filename='streetview/images/arrow.svg') }}" alt=""></div>
+				</a>
+			</li>
+			<li class="closed">
+				<a href="#">
+					<span>LOCKED</span>
+					<h6>Street Hunt Name 02</h6>
+				</a>
+			</li>
+			<li class="closed">
+				<a href="#">
+					<span>LOCKED</span>
+					<h6>Street Hunt Name 03</h6>
+				</a>
+			</li>
+			<li class="closed">
+				<a href="#">
+					<span>LOCKED</span>
+					<h6>Street Hunt Name 04</h6>
+				</a>
+			</li>
+		</ul>
+	</div>
+	<div class="lightbox" id="prize">
+		<h2>03</h2>
+		<h3><span>DAILY PRIZE</span>Top 5<br/>Leaderboard</h3>
+		<ul class="content_pod-b">
+			<li class="default">
+				<a href="#" class="btn_green btn">
+					<span>1</span>
+					<h6>Name Here</h6>
+					<div>200</div>
+				</a>
+			</li>
+			<li class="default">
+				<a href="#" class="btn_green btn">
+					<span>1</span>
+					<h6>Name Here</h6>
+					<div>200</div>
+				</a>
+			</li>
+			<li class="default">
+				<a href="#" class="btn_green btn">
+					<span>1</span>
+					<h6>Name Here</h6>
+					<div>200</div>
+				</a>
+			</li>
+			<li class="default">
+				<a href="#" class="btn_green btn">
+					<span>1</span>
+					<h6>Name Here</h6>
+					<div>200</div>
+				</a>
+			</li>
+		</ul>
+	</div>
+	<div class="lightbox" id="terms">
+		<h2>04</h2>
+		<h3><span>OUR</span>T&Cs</h3>
+		<div class="content_pod-a">Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor</div>
+    </div>
+	<!--  Google Maps Plugin    -->
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQX86Kf-9nFnNfOafH-tZ8osZ58vK2kzM"></script>
+	<!--  Mustache templating-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js"></script>
+	<script src="{{ url_for('static', filename='streetview/js/jquery-1.7.0.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='streetview/js/featherlight.js') }}" type="text/javascript" charset="utf-8"></script>
+	<script>
+		var trigger = document.querySelector('.trigger');
+		var el = document.querySelector('.dropdown_section');
+
+		trigger.onclick = function() {
+			el.classList.toggle('open');
+			trigger.classList.toggle('active');
+		}
+	</script>
+    {% block scripts %}
+
+        {# scripts go here #}
+        
+    {% endblock %}
+
+</body>
+
+</html>

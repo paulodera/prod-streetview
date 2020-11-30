@@ -19,8 +19,16 @@ def not_found(error):
     return render_template('404.html'), 404
 
 
+@app.route('/', methods=['GET'])
+def start():
+    return render_template('streetview/start.html')
+
+
 from app.auth_mod.models import Auth
 from app.auth_mod.controllers import auth_mod as auth_module
+from app.treasure_mod.controllers import treasure_mod as treasure_module
+from app.hunt_mod.controllers import hunt_mod as hunt_module
+from app.clue_mod.controllers import clue_mod as clue_module
 
 
 @login_manager.user_loader
@@ -29,5 +37,9 @@ def load_user(user_id):
 
 
 app.register_blueprint(auth_module)
+app.register_blueprint(treasure_module)
+app.register_blueprint(hunt_module)
+app.register_blueprint(clue_module)
+
 
 db.create_all()

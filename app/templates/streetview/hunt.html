@@ -1,0 +1,232 @@
+{% extends 'streetview_base.html' %}
+
+{% block game_tray %}
+<div class="second_header">
+    <div class="item_center">
+        <a href="page_three.html" class="nav_next"></a>
+        <a href="page_one.html" class="nav_prev"></a>
+        <div class="title">
+            <span class="a">{{ data.treasure['name'] }}</span>
+        </div>
+    </div>
+    <div class="item_left">
+        <div class="title" id="clockdiv">
+            <span class="a">Time</span>
+            <span class="b" id="min">{{ data.treasure['time'] }}</span>.<span class="b" id="sec">00</span>
+        </div>
+    </div>
+    <div class="item_right">
+        <div class="title">
+            <span class="a">Points</span>
+            <span class="b" id="points">0</span>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div class="content_section" >
+    <div id="panorama" style="width: 100%; height: 100%;"></div>
+    <div class="content_block-one">
+        <h2>street<br/>hunt<br/><span>name</span></h2>
+        <p>{{ data.treasure['description'] }}</p>
+        <img src="{{ url_for('static', filename='streetview/images/egg.png') }}" alt="">
+        <div>Look around to find the marker</div>
+    </div>
+    <div class="content_block-two block_content" id="message_block">
+        <div class="icon icon_1"></div>
+        <div class="icon icon_2"></div>
+        <div class="icon icon_3"></div>
+        <div class="icon icon_4"></div>
+        <div class="wrapper">
+            <div class="pod">
+                <h2>CLUE #1</h2>
+                <h3>{{ data.clue['description'] }}</h3>
+                {% for opt in data.options %}
+                    <a onclick="relocatePlayer( '{{ opt['id'] }}' )">
+                        Go to {{ opt['name'] }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+//timer controller
+function getTimeRemaining(endtime) {
+  const total = Date.parse(endtime) - Date.parse(new Date());
+  const seconds = Math.floor((total / 1000) % 60);
+  const minutes = Math.floor((total / 1000 / 60) % 60);
+
+  return {
+    total,
+    minutes,
+    seconds
+  };
+}
+
+function initializeClock(id, endtime) {
+  const clock = document.getElementById(id);
+  const minutesSpan = clock.querySelector('#min');
+  const secondsSpan = clock.querySelector('#sec');
+
+  function updateClock() {
+    const t = getTimeRemaining(endtime);
+    minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+    secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+
+    if (t.total <= 0) {
+      clearInterval(timeinterval);
+    }
+  }
+
+  updateClock();
+  const timeinterval = setInterval(updateClock, 1000);
+
+}
+
+const deadline = new Date(Date.parse(new Date()) + 15 * 24 * 10 * 10 * 1000);
+initializeClock('clockdiv', deadline);
+
+</script>
+<script>
+
+$( document ).ready(function() {
+    localStorage.setItem('points', 0);
+    localStorage.setItem('treasure_id', '{{ data.treasure['id']|safe }}' );
+});
+
+let panorama;
+
+function initialize() {
+  panorama = new google.maps.StreetViewPanorama(
+    document.getElementById("panorama"),
+    {
+      position: { lat: -1.2595552637385474, lng: 36.785125526142544 }, //
+      pov: { heading: 165, pitch: 0 },
+      zoom: 1,
+      zoomControlOptions: { position: google.maps.ControlPosition.LEFT_CENTER },
+      addressControlOptions: { position: google.maps.ControlPosition.BOTTOM_CENTER}
+    }
+  );
+
+  const gameMarker = new google.maps.Marker({
+    position: { lat: 37.86926, lng: -122.254811 },
+    map: panorama,
+    icon: "https://chart.apis.google.com/chart?chst=d_map_pin_icon&chld=bus|FFFF00",
+    title: "You found it",
+  });
+}
+
+initialize();
+
+
+const relocatePlayer = (optionId) => {
+    // get option details
+    let endpoint = "/clue/options/" + optionId;
+    let optionsInfo = $.get( endpoint, (data) => {
+        if(data.was_endpoint && data.is_correct)
+        {
+            // the user got the last checkpoint correct, display message
+            add_points(data.points);
+            $('#message_block').addClass("success");
+            let points = localStorage.getItem('points');
+            let html = `
+            <div class="icon icon_1"></div>
+            <div class="icon icon_2"></div>
+            <div class="icon icon_3"></div>
+            <div class="icon icon_4"></div>
+            <div class="wrapper">
+                <div class="pod">
+                    <h2>SUCCESS</h2>
+                    <h3>${data.name} hosted the first M-PESA Agent</h3>
+                    <h4><span>${points}</span>points</h4>
+                    <a href="#">Redeem Prize</a>
+                </div>
+            </div>
+            `;
+            $('#message_block').html(html)
+
+        } else if(data.was_endpoint && data.is_correct === false) {
+            // last checkpoint down the wrong path
+            add_points(data.points);
+            points = localStorage.getItem('points');
+            $('#message_block').addClass("danger");
+            let html = `
+            <div class="icon icon_1"></div>
+            <div class="icon icon_2"></div>
+            <div class="icon icon_3"></div>
+            <div class="icon icon_4"></div>
+            <div class="wrapper">
+                <div class="pod">
+                    <h2>FAILED</h2>
+                    <h3>This is not where the first M-PESA Agent was.</h3>
+                    <h4><span>${points}</span>points</h4>
+                    <a href="#">Redeem Prize</a>
+                </div>
+            </div>
+            `;
+            $('#message_block').html(html);
+        } else {
+            add_points(data.points);
+            let newPos = data.coordinates.split(',');
+            let lat = newPos[0];
+            let lng = newPos[1];
+            const newPosition = new google.maps.LatLng({lat: Number(lat), lng: Number(lng)});
+            get_next_clue(data.slug);
+            panorama.setPosition(newPosition);
+        }
+
+    });
+
+}
+
+
+const get_next_clue = slug => {
+    console.log(slug);
+    let treasure_id = localStorage.getItem('treasure_id');
+    let endpoint = '/clue/options/' + treasure_id + '/' + slug;
+    $.get( endpoint,  (data) => {
+         let html = `
+            <div class="icon icon_1"></div>
+            <div class="icon icon_2"></div>
+            <div class="icon icon_3"></div>
+            <div class="icon icon_4"></div>
+            <div class="wrapper">
+                <div class="pod">
+                    <h2>CLUE #1</h2>
+                     <h3>${data.description}</h3>`+
+                     $.each(data, function(key, item) {
+
+                     });
+            +`
+<!--                    {% for opt in data.options %}-->
+<!--                        <a onclick="relocatePlayer( '{{ opt['id'] }}' )">-->
+<!--                            Go to {{ opt['name'] }}-->
+<!--                        </a>-->
+<!--                    {% endfor %}-->
+
+                </div>
+            </div>
+        `;
+        $('#message_block').html(html);
+    });
+}
+
+
+const add_points = (points) => {
+    let current_points = localStorage.getItem('points');
+    let total = parseInt(current_points) + parseInt(points);
+    localStorage.setItem('points', total);
+    $('#points').html(total); // update points
+    return total;
+}
+
+</script>
+
+{% endblock %}

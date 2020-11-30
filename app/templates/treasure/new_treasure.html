@@ -1,0 +1,71 @@
+<!-- treasure/new_template.html -->
+
+{% extends 'base.html' %}
+
+{% block sidebar %}
+
+    <li class="nav-item active">
+        <a class="nav-link" href="javascript:;">
+          <i class="material-icons">map</i>
+          <p>Treasures</p>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="javascript:;">
+          <i class="material-icons">leaderboard</i>
+          <p>Leaderboard</p>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="javascript:;">
+          <i class="material-icons">settings</i>
+          <p>Profile</p>
+        </a>
+    </li>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="col-md-8 col-12 mr-auto ml-auto">
+    <div class="card">
+        <div class="card-header card-header-icon card-header-success">
+          <div class="card-icon">
+            <i class="material-icons">add</i>
+          </div>
+          <h4 class="card-title">Add Treasure Hunt</h4>
+        </div>
+        <div class="card-body">
+          <form>
+              <div class="col-md-8 mr-auto ml-auto">
+                <div class="form-group">
+                  <label class="bmd-label-floating">Hunt name</label>
+                  {{ form.name(class_="form-control") }}
+                </div>
+              </div>
+              <div class="col-md-8 mr-auto ml-auto">
+                <div class="form-group">
+                  <label class="bmd-label-floating">Hunt time</label>
+                  {{ form.time(class_="form-control") }}
+                </div>
+              </div>
+              <br/>
+              <div class="form-group">
+                  <label>About treasure hunt</label>
+                  <div class="form-group">
+                    <label class="bmd-label-floating"> Hunt description</label>
+                    {{ form.description(class_="form-control") }}
+                  </div>
+              </div>
+
+              {{ form.submit(class_="btn btn-success btn-lg pull-right") }}
+
+            <div class="clearfix"></div>
+          </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

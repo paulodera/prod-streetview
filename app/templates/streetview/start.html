@@ -1,0 +1,14 @@
+{% extends 'streetview_base.html' %}
+
+{% block content %}
+<div class="content_section" style="background-image: url('/static/streetview/images/Screenshot_1.jpg')">
+    <div class="content_pod">
+        <img src="{{ url_for('static', filename='streetview/images/main_title.svg') }}" alt="Streetview & Beyond" class="main_title" />
+        <h2>Use your <span>Street Smarts</span> to beat our  <span>StreetView</span> challenges</h2>
+        <a href=" {{ url_for('hunt.get_hunts') }} " class="btn main_btn btn_green">
+            <span>Start here</span>
+            <div><img src="{{ url_for('static', filename='streetview/images/arrow.svg') }}" alt=""> </div>
+        </a>
+    </div>
+</div>
+{% endblock %}
