@@ -17,11 +17,12 @@ def start_hunt(treasure_id):
     clue_data = Clue.get_clue(treasure_id)
     treasure_data = Treasure.get_treasure_details(treasure_id)
     options_data = ClueOptions.get_clue_options(clue_data.id)
-
+    all_hunts = Treasure.get_all() # to display on the menu
     data = {
         'clue': clue_data,
         'treasure': treasure_data,
-        'options': options_data
+        'options': options_data,
+        'hunts': all_hunts
     }
 
     return render_template('streetview/hunt.html', data=data)

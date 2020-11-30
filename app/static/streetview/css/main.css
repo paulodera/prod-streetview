@@ -366,7 +366,7 @@ img {
 .content_section {
   position: relative;
   height: 100vh;
-  background-color: transparent; }
+  background-color: #000000; }
   .content_section .content_pod {
     position: absolute;
     top: 50%;
@@ -417,14 +417,7 @@ img {
           .content_section .content_pod ul li a img {
             right: 16px;
             width: 20px; }
-.panorama {
-  height: 100%;
-  width: 100%;
-  position:absolute;
-  top: 0;
-  left: 0;
-  z-index: 2;
-}
+
 .btn {
   display: block;
   position: relative;
@@ -473,7 +466,7 @@ img {
   z-index: 10;
   display: flex; }
   .footer_section::after {
-    background-image: url("../images/footer_stripe.png");
+    background-image: url("/static/streetview/images/footer_stripe.png");
     background-repeat: repeat-x;
     background-position: bottom;
     content: '';
@@ -594,7 +587,7 @@ img {
   .content_block-two a:hover {
     background-color: #ababab; }
 .content_block-two .icon {
-  background-image: url("../images/prize.png");
+  background-image: url("/static/streetview/images/prize.png");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -629,7 +622,7 @@ img {
     .content_block-three a:hover {
       background-color: #ababab; }
   .content_block-three .icon {
-    background-image: url("../images/coin.png");
+    background-image: url("/static/streetview/images/coin.png");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -771,8 +764,7 @@ img {
   .content_block-one {
     position: absolute;
     left: 5%;
-    top: 30%;
-  }
+    top: 30%; }
 
   .content_section .content_pod ul {
     width: 400px; }

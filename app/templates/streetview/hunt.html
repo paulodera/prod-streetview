@@ -1,10 +1,30 @@
 {% extends 'streetview_base.html' %}
 
+{% block hunts %}
+
+<div class="lightbox" id="hunt">
+    <h2>02</h2>
+    <h3><span>EXPLORE</span>Street hunts</h3>
+    <ul class="content_pod-b">
+        {% for hunt in data['hunts'] %}
+            <li class="default">
+                <a href="#" class="btn_green btn">
+                    <span>PLAY</span>
+                    <h6>{{ hunt['name'] }}</h6>
+                    <div><img src="{{ url_for('static', filename='streetview/images/arrow.svg') }}" alt=""></div>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}
+
 {% block game_tray %}
 <div class="second_header">
     <div class="item_center">
-        <a href="page_three.html" class="nav_next"></a>
-        <a href="page_one.html" class="nav_prev"></a>
+        <a href="javascript:;" class="nav_next"></a>
+        <a href="javascript:;" class="nav_prev"></a>
         <div class="title">
             <span class="a">{{ data.treasure['name'] }}</span>
         </div>
@@ -12,7 +32,7 @@
     <div class="item_left">
         <div class="title" id="clockdiv">
             <span class="a">Time</span>
-            <span class="b" id="min">{{ data.treasure['time'] }}</span>.<span class="b" id="sec">00</span>
+            <span class="b" id="timer">0</span>
         </div>
     </div>
     <div class="item_right">
@@ -34,14 +54,14 @@
         <img src="{{ url_for('static', filename='streetview/images/egg.png') }}" alt="">
         <div>Look around to find the marker</div>
     </div>
-    <div class="content_block-two block_content" id="message_block">
+    <div class="content_block-two block_content danger" id="message_block">
         <div class="icon icon_1"></div>
         <div class="icon icon_2"></div>
         <div class="icon icon_3"></div>
         <div class="icon icon_4"></div>
         <div class="wrapper">
             <div class="pod">
-                <h2>CLUE #1</h2>
+                <h2 id="clue_ident">CLUE #1</h2>
                 <h3>{{ data.clue['description'] }}</h3>
                 {% for opt in data.options %}
                     <a onclick="relocatePlayer( '{{ opt['id'] }}' )">
@@ -57,57 +77,53 @@
 
 {% block scripts %}
 <script>
-//timer controller
-function getTimeRemaining(endtime) {
-  const total = Date.parse(endtime) - Date.parse(new Date());
-  const seconds = Math.floor((total / 1000) % 60);
-  const minutes = Math.floor((total / 1000 / 60) % 60);
-
-  return {
-    total,
-    minutes,
-    seconds
-  };
-}
-
-function initializeClock(id, endtime) {
-  const clock = document.getElementById(id);
-  const minutesSpan = clock.querySelector('#min');
-  const secondsSpan = clock.querySelector('#sec');
-
-  function updateClock() {
-    const t = getTimeRemaining(endtime);
-    minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
-    secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
-
-    if (t.total <= 0) {
-      clearInterval(timeinterval);
-    }
-  }
-
-  updateClock();
-  const timeinterval = setInterval(updateClock, 1000);
-
-}
-
-const deadline = new Date(Date.parse(new Date()) + 15 * 24 * 10 * 10 * 1000);
-initializeClock('clockdiv', deadline);
-
-</script>
-<script>
-
+/***
+ * **************************************
+ * Store Game Variables
+ */
 $( document ).ready(function() {
     localStorage.setItem('points', 0);
     localStorage.setItem('treasure_id', '{{ data.treasure['id']|safe }}' );
+    localStorage.setItem('clue', 1);
 });
 
+
+/***
+ * **************************************
+ * Game Time Ticker
+ */
+var d1 = new Date (),
+    d2 = new Date ( d1 );
+d2.setMinutes ( d1.getMinutes() + {{ data.treasure['time'] }} );
+
+var countDownDate = d2.getTime();
+
+var x = setInterval(function() {
+  var now = new Date().getTime();
+  var distance = countDownDate - now;
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  $("#timer").html(minutes + "m " + seconds + "s ");
+
+  if (distance < 0) { // time has ended, stop the game!
+    clearInterval(x);
+    stopGame();
+  }
+}, 1000);
+
+
+/***
+ * **************************************
+ * Google Maps
+ */
 let panorama;
 
 function initialize() {
   panorama = new google.maps.StreetViewPanorama(
     document.getElementById("panorama"),
     {
-      position: { lat: -1.2595552637385474, lng: 36.785125526142544 }, //
+      position: { lat: -1.2595552637385474, lng: 36.785125526142544 },
       pov: { heading: 165, pitch: 0 },
       zoom: 1,
       zoomControlOptions: { position: google.maps.ControlPosition.LEFT_CENTER },
@@ -126,6 +142,10 @@ function initialize() {
 initialize();
 
 
+/***
+ * **************************************
+ * Player relocation, to a different scene
+ */
 const relocatePlayer = (optionId) => {
     // get option details
     let endpoint = "/clue/options/" + optionId;
@@ -134,8 +154,11 @@ const relocatePlayer = (optionId) => {
         {
             // the user got the last checkpoint correct, display message
             add_points(data.points);
-            $('#message_block').addClass("success");
+            $('#message_block').removeClass();
+            $('#message_block').addClass("content_block-three success block_content");
             let points = localStorage.getItem('points');
+            let timeRemaining = $("#timer").text();
+            clearInterval(x);
             let html = `
             <div class="icon icon_1"></div>
             <div class="icon icon_2"></div>
@@ -144,19 +167,26 @@ const relocatePlayer = (optionId) => {
             <div class="wrapper">
                 <div class="pod">
                     <h2>SUCCESS</h2>
-                    <h3>${data.name} hosted the first M-PESA Agent</h3>
+                    <p style="font-weight: bold;">{{data.treasure['description']}}</p>
                     <h4><span>${points}</span>points</h4>
+                    <h4><span>${timeRemaining}</span>time remaining</h4>
                     <a href="#">Redeem Prize</a>
                 </div>
             </div>
             `;
-            $('#message_block').html(html)
+            $('#message_block').html(html);
+            relocator(data.coordinates, data.slug);
 
         } else if(data.was_endpoint && data.is_correct === false) {
             // last checkpoint down the wrong path
             add_points(data.points);
-            points = localStorage.getItem('points');
-            $('#message_block').addClass("danger");
+            relocator(data.coordinates, data.slug);
+            let points = localStorage.getItem('points');
+            let treasure_id = localStorage.getItem('treasure_id');
+            console.log(treasure_id);
+            $('#message_block').removeClass();
+            $('#message_block').addClass("content_block-three failure block_content");
+
             let html = `
             <div class="icon icon_1"></div>
             <div class="icon icon_2"></div>
@@ -165,21 +195,16 @@ const relocatePlayer = (optionId) => {
             <div class="wrapper">
                 <div class="pod">
                     <h2>FAILED</h2>
-                    <h3>This is not where the first M-PESA Agent was.</h3>
+                    <h3>Seems you got lost</h3>
                     <h4><span>${points}</span>points</h4>
-                    <a href="#">Redeem Prize</a>
+                    <a href="/hunt/${treasure_id}">Start the hunt again</a>
                 </div>
             </div>
             `;
             $('#message_block').html(html);
         } else {
             add_points(data.points);
-            let newPos = data.coordinates.split(',');
-            let lat = newPos[0];
-            let lng = newPos[1];
-            const newPosition = new google.maps.LatLng({lat: Number(lat), lng: Number(lng)});
-            get_next_clue(data.slug);
-            panorama.setPosition(newPosition);
+            relocator(data.coordinates, data.slug);
         }
 
     });
@@ -187,11 +212,52 @@ const relocatePlayer = (optionId) => {
 }
 
 
+
+const stopGame = () => {
+    // stop the game when the timer stops
+    let points = localStorage.getItem('points');
+    let treasure_id = localStorage.getItem('treasure_id');
+    console.log(treasure_id);
+    $('#message_block').removeClass();
+    $('#message_block').addClass("content_block-three failure block_content");
+
+    let html = `
+    <div class="icon icon_1"></div>
+    <div class="icon icon_2"></div>
+    <div class="icon icon_3"></div>
+    <div class="icon icon_4"></div>
+    <div class="wrapper">
+        <div class="pod">
+            <h2>TIME’S UP</h2>
+            <h3>Sorry your time run out</h3>
+            <h4><span>00:00:00</span></h4>
+            <h4><span>${points}</span>points</h4>
+            <a href="/hunt/${treasure_id}">Start the hunt again</a>
+        </div>
+    </div>
+    `;
+    $('#message_block').html(html);
+}
+
+
+function relocator(coordinates, slug) {
+    let newPos = coordinates.split(',');
+    let lat = newPos[0];
+    let lng = newPos[1];
+    const newPosition = new google.maps.LatLng({lat: Number(lat), lng: Number(lng)});
+    get_next_clue(slug);
+    panorama.setPosition(newPosition);
+}
+
+
 const get_next_clue = slug => {
     console.log(slug);
     let treasure_id = localStorage.getItem('treasure_id');
     let endpoint = '/clue/options/' + treasure_id + '/' + slug;
+    let clue_no = localStorage.getItem('clue');
     $.get( endpoint,  (data) => {
+        let next_clue = parseInt(clue_no) + 1;
+        localStorage.setItem('clue', next_clue);
          let html = `
             <div class="icon icon_1"></div>
             <div class="icon icon_2"></div>
@@ -199,18 +265,12 @@ const get_next_clue = slug => {
             <div class="icon icon_4"></div>
             <div class="wrapper">
                 <div class="pod">
-                    <h2>CLUE #1</h2>
-                     <h3>${data.description}</h3>`+
-                     $.each(data, function(key, item) {
-
+                    <h2>CLUE #${next_clue}</h2>
+                     <h3>${data.description}</h3>`;
+                     $.each(data['options'], function(key, item) {
+                         html += `<a onclick="relocatePlayer('${item['id']}')">${item['name']}</a>`;
                      });
-            +`
-<!--                    {% for opt in data.options %}-->
-<!--                        <a onclick="relocatePlayer( '{{ opt['id'] }}' )">-->
-<!--                            Go to {{ opt['name'] }}-->
-<!--                        </a>-->
-<!--                    {% endfor %}-->
-
+            html += `
                 </div>
             </div>
         `;
