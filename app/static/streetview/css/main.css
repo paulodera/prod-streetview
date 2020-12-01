@@ -569,15 +569,18 @@ img {
     width: 210px;
     padding: 30px;
     text-align: center; }
-  .block_content::after {
+V
+.block_content::after {
     content: '';
     width: 10px;
     height: 100%;
-    background-color: #FBBF18;
+    /*background-color: #FBBF18;*/
     position: absolute;
     right: 20px;
     top: 40px;
     display: block; }
+
+
 
 .content_block-two .pod {
   background-color: #ffffff;
