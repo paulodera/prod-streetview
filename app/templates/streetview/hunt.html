@@ -71,19 +71,6 @@
             </div>
         </div>
     </div>
-
-     <div id="form-score" class="content_block-one block_content" style="background-color: #f7f7f7; position: absolute;left: 50%; top: 50%;transform: translate(-50%, -50%);">
-         <div class="wrapper">
-            <h2>Enter Details</h2>
-            <form class="form-control">
-                <input type="text" name="name" id="username" placeholder="Enter your name here...">
-                <input type="text" name="phone" id="phone" placeholder="Enter your phone number here...">
-
-                <input type="submit" value="submit" class="button">
-            </form>
-        </div>
-    </div>
-
 </div>
 
 {% endblock %}
@@ -92,41 +79,12 @@
 <script>
 /***
  * **************************************
- * Store Game letiables
+ * Store Game Variables
  */
 $( document ).ready(function() {
     localStorage.setItem('points', 0);
     localStorage.setItem('treasure_id', '{{ data.treasure['id']|safe }}' );
     localStorage.setItem('clue', 1);
-    $('#form-score').hide();
-
-     $('form').submit(function(event) {
-
-        let points = localStorage.getItem('points');
-        let time = localStorage.getItem('time');
-        let treasure_id = localStorage.getItem('treasure_id');
-
-        let formData = {
-            'name'              : $('input[name=name]').val(),
-            'phone'             : $('input[name=phone]').val(),
-            'points'            : points,
-            'treasure_id'       : treasure_id,
-            'time'              : time
-        };
-
-        $.ajax({
-            type        : 'POST',
-            url         : "/player/add",
-            data        : formData,
-            dataType    : 'json',
-            encode      : true
-        })
-            .done(function(data) {
-                console.log(data);
-            });
-        event.preventDefault();
-    });
-
 });
 
 
@@ -134,17 +92,17 @@ $( document ).ready(function() {
  * **************************************
  * Game Time Ticker
  */
-let d1 = new Date (),
+var d1 = new Date (),
     d2 = new Date ( d1 );
 d2.setMinutes ( d1.getMinutes() + {{ data.treasure['time'] }} );
 
-let countDownDate = d2.getTime();
+var countDownDate = d2.getTime();
 
-let x = setInterval(function() {
-  let now = new Date().getTime();
-  let distance = countDownDate - now;
-  let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+var x = setInterval(function() {
+  var now = new Date().getTime();
+  var distance = countDownDate - now;
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
   $("#timer").html(minutes + "m " + seconds + "s ");
 
@@ -200,7 +158,6 @@ const relocatePlayer = (optionId) => {
             $('#message_block').addClass("content_block-three success block_content");
             let points = localStorage.getItem('points');
             let timeRemaining = $("#timer").text();
-            localStorage.setItem('time', timeRemaining);
             clearInterval(x);
             let html = `
             <div class="icon icon_1"></div>
@@ -213,7 +170,7 @@ const relocatePlayer = (optionId) => {
                     <p style="font-weight: bold;">{{data.treasure['description']}}</p>
                     <h4><span>${points}</span>points</h4>
                     <h4><span>${timeRemaining}</span>time remaining</h4>
-                    <a onclick="getUserDetails()">Redeem Prize</a>
+                    <a href="#">Redeem Prize</a>
                 </div>
             </div>
             `;
@@ -226,6 +183,7 @@ const relocatePlayer = (optionId) => {
             relocator(data.coordinates, data.slug);
             let points = localStorage.getItem('points');
             let treasure_id = localStorage.getItem('treasure_id');
+            console.log(treasure_id);
             $('#message_block').removeClass();
             $('#message_block').addClass("content_block-three failure block_content");
 
@@ -254,16 +212,12 @@ const relocatePlayer = (optionId) => {
 }
 
 
-const getUserDetails = () => {
-    $('#form-score').show();
-    $('#message_block').hide();
-}
-
 
 const stopGame = () => {
     // stop the game when the timer stops
     let points = localStorage.getItem('points');
     let treasure_id = localStorage.getItem('treasure_id');
+    console.log(treasure_id);
     $('#message_block').removeClass();
     $('#message_block').addClass("content_block-three failure block_content");
 
@@ -297,6 +251,7 @@ function relocator(coordinates, slug) {
 
 
 const get_next_clue = slug => {
+    console.log(slug);
     let treasure_id = localStorage.getItem('treasure_id');
     let endpoint = '/clue/options/' + treasure_id + '/' + slug;
     let clue_no = localStorage.getItem('clue');
