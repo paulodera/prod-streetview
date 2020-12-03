@@ -9,5 +9,5 @@ class TreasureTable(Table):
     id = Col('Id', show=False)
     name = Col('Name')
     description = Col('Description')
-    time = Col('Time')
+    time = Col('Time (Minutes)')
     is_active = Col('Active')

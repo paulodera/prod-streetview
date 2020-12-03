@@ -1,6 +1,9 @@
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.types import ARRAY
 from app import db
 import sqlalchemy
+from sqlalchemy.ext.mutable import MutableList
+from sqlalchemy.dialects import postgresql as pg
 
 
 class Base(db.Model):
@@ -53,7 +56,9 @@ class Clue(Base):
     )
 
     slug = db.Column(
-        db.String(20),
+        # # MutableList.as_mutable(db.PickleType),
+        # # default=[]
+        pg.ARRAY(db.String, dimensions=1),
         nullable=False
     )
 
@@ -93,10 +98,7 @@ class Clue(Base):
     @classmethod
     def get_next_clue(cls, slug, treasure_id):
         res = cls.query.filter_by(slug=slug, treasure_id=treasure_id).first()
-        if res:
-            return res.serialize()
-        else:
-            return None
+        return res.serialize()
 
     @classmethod
     def get_clue(cls, treasure_id):
