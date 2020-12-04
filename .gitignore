@@ -12,6 +12,7 @@ build/
 *.egg-info/
 _mailinglist
 .tox/
+migrations/
 .cache/
 .pytest_cache/
 .idea/
