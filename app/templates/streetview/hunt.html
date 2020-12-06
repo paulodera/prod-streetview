@@ -1,5 +1,67 @@
 {% extends 'streetview_base.html' %}
 
+{% block styles %}
+<style>
+    /* The popup form - hidden by default */
+    .form-popup {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      /*right: 15px;*/
+      /*border: 3px solid #f1f1f1;*/
+      z-index: 9;
+    }
+
+    .center {
+       position: absolute;
+       top: 50%;
+       left: 50%;
+       transform: translate(-50%, -50%);
+   }
+
+    /* Add styles to the form container */
+    .form-container {
+      max-width: 300px;
+      padding: 10px;
+      background-color: white;
+    }
+
+    /* Full-width input fields */
+    .form-container input[type=text], .form-container {
+      width: 100%;
+      overflow-x: hidden;
+      padding-bottom: 20px;
+      margin: 5px 0 22px 0;
+      border: none;
+      background: #f1f1f1;
+    }
+
+    /* When the inputs get focus, do something */
+    .form-container input[type=text]:focus, .form-container input[type=password]:focus {
+      background-color: #ddd;
+      outline: none;
+    }
+
+    /* Set a style for the submit/login button */
+    .form-container .btn {
+      background-color: #2cb34a;
+      color: white;
+      padding: 16px 20px;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom:10px;
+      opacity: 0.8;
+    }
+
+    /* Add some hover effects to buttons */
+    .form-container .btn:hover, .open-button:hover {
+      opacity: 1;
+    }
+</style>
+
+{% endblock %}
+
 {% block hunts %}
 
 <div class="lightbox" id="hunt">
@@ -70,6 +132,18 @@
                 {% endfor %}
             </div>
         </div>
+    </div>
+
+    <div class="form-popup center" id="userForm">
+        <form action="" class="form-container">
+            <h1>Register Details</h1>
+
+            <input type="text" name="name" placeholder="Enter your name" required/>
+
+            <input type="text" name="phone" placeholder="Enter phone number" required/>
+
+            <button type="submit" class="btn">Register Me</button>
+        </form>
     </div>
 </div>
 
@@ -170,7 +244,7 @@ const relocatePlayer = (optionId) => {
                     <p style="font-weight: bold;">{{data.treasure['description']}}</p>
                     <h4><span>${points}</span>points</h4>
                     <h4><span>${timeRemaining}</span>time remaining</h4>
-                    <a href="#">Redeem Prize</a>
+                    <a onclick="registerUser()">Redeem Prize</a>
                 </div>
             </div>
             `;
@@ -233,12 +307,16 @@ const relocatePlayer = (optionId) => {
 }
 
 
+const registerUser = () => {
+    $('#message_block').hide()
+    $("#userForm").show();
+}
 
 const stopGame = () => {
     // stop the game when the timer stops
     let points = localStorage.getItem('points');
     let treasure_id = localStorage.getItem('treasure_id');
-    console.log(treasure_id);
+
     $('#message_block').removeClass();
     $('#message_block').addClass("content_block-three failure block_content");
 
@@ -290,12 +368,11 @@ const get_next_clue = (halfLife=false, slug=null) => {
         endpoint = endpoint + treasure_id + '/' + slug;
         next_clue = parseInt(clue_no) + 1
     }
-    console.log(endpoint);
-    console.log(next_clue);
+
 
     $.get( endpoint,  (data) => {
         localStorage.setItem('clue', next_clue);
-        console.log(data['options']);
+
          let html = `
             <div class="icon icon_1"></div>
             <div class="icon icon_2"></div>
