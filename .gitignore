@@ -13,6 +13,7 @@ build/
 _mailinglist
 .tox/
 migrations/
+postgres-data/
 .cache/
 .pytest_cache/
 .idea/

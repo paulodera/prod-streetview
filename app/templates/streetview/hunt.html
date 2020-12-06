@@ -92,17 +92,17 @@ $( document ).ready(function() {
  * **************************************
  * Game Time Ticker
  */
-var d1 = new Date (),
+let d1 = new Date (),
     d2 = new Date ( d1 );
 d2.setMinutes ( d1.getMinutes() + {{ data.treasure['time'] }} );
 
-var countDownDate = d2.getTime();
+let countDownDate = d2.getTime();
 
-var x = setInterval(function() {
-  var now = new Date().getTime();
-  var distance = countDownDate - now;
-  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+let x = setInterval(function() {
+  let now = new Date().getTime();
+  let distance = countDownDate - now;
+  let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  let seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
   $("#timer").html(minutes + "m " + seconds + "s ");
 
@@ -132,7 +132,7 @@ function initialize() {
   );
 
   const gameMarker = new google.maps.Marker({
-    position: { lat: 37.86926, lng: -122.254811 },
+    position: { lat: -1.2595552637385474, lng: 36.785125526142544 },
     map: panorama,
     icon: "https://chart.apis.google.com/chart?chst=d_map_pin_icon&chld=bus|FFFF00",
     title: "You found it",
@@ -178,16 +178,35 @@ const relocatePlayer = (optionId) => {
             relocator(data.coordinates, data.slug);
 
         } else if(data.was_endpoint && data.is_correct === false) {
-            // last checkpoint down the wrong path
+            // dead-end, start half life
             add_points(data.points);
-            relocator(data.coordinates, data.slug);
+            // relocator(data.coordinates, data.slug);
             let points = localStorage.getItem('points');
             let treasure_id = localStorage.getItem('treasure_id');
-            console.log(treasure_id);
+
             $('#message_block').removeClass();
             $('#message_block').addClass("content_block-three failure block_content");
 
-            let html = `
+            // TODO: get the first right clue option
+            startHalfLife();
+
+            /*let html = `
+            <div class="icon icon_1"></div>
+            <div class="icon icon_2"></div>
+            <div class="icon icon_3"></div>
+            <div class="icon icon_4"></div>
+            <div class="wrapper">
+                <div class="pod">
+                    <h2>SUCCESS</h2>
+                    <p style="font-weight: bold;">{{data.treasure['description']}}</p>
+                    <h4><span>${points}</span>points</h4>
+                    <h4><span>${timeRemaining}</span>time remaining</h4>
+                    <a href="#">Redeem Prize</a>
+                </div>
+            </div>
+            `;
+
+            let html = ` render lost path div
             <div class="icon icon_1"></div>
             <div class="icon icon_2"></div>
             <div class="icon icon_3"></div>
@@ -198,10 +217,12 @@ const relocatePlayer = (optionId) => {
                     <h3>Seems you got lost</h3>
                     <h4><span>${points}</span>points</h4>
                     <a href="/hunt/${treasure_id}">Start the hunt again</a>
+                    <a href="/hunt/half-life/${treasure_id}">Start the hunt again</a>
                 </div>
             </div>
             `;
             $('#message_block').html(html);
+            */
         } else {
             add_points(data.points);
             relocator(data.coordinates, data.slug);
@@ -245,19 +266,36 @@ function relocator(coordinates, slug) {
     let lat = newPos[0];
     let lng = newPos[1];
     const newPosition = new google.maps.LatLng({lat: Number(lat), lng: Number(lng)});
-    get_next_clue(slug);
+    get_next_clue(false, slug);
+
     panorama.setPosition(newPosition);
 }
 
 
-const get_next_clue = slug => {
-    console.log(slug);
+const startHalfLife = () => {
+    get_next_clue(true);
+}
+
+
+const get_next_clue = (halfLife=false, slug=null) => {
+    let next_clue;
+    let endpoint = '/clue/options/';
     let treasure_id = localStorage.getItem('treasure_id');
-    let endpoint = '/clue/options/' + treasure_id + '/' + slug;
     let clue_no = localStorage.getItem('clue');
+
+    if(halfLife === true) {
+        endpoint = endpoint + 'half-life/' + treasure_id;
+        next_clue = 2;
+    } else {
+        endpoint = endpoint + treasure_id + '/' + slug;
+        next_clue = parseInt(clue_no) + 1
+    }
+    console.log(endpoint);
+    console.log(next_clue);
+
     $.get( endpoint,  (data) => {
-        let next_clue = parseInt(clue_no) + 1;
         localStorage.setItem('clue', next_clue);
+        console.log(data['options']);
          let html = `
             <div class="icon icon_1"></div>
             <div class="icon icon_2"></div>

@@ -1,4 +1,4 @@
-from flask import render_template, redirect, flash, g, url_for, Blueprint
+from flask import render_template, redirect, flash, g, url_for, Blueprint, make_response, jsonify
 
 from app.treasure_mod.models import Treasure
 from app.clue_mod.models import Clue, ClueOptions

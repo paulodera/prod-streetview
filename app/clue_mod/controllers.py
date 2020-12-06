@@ -19,3 +19,12 @@ def get_next_clue(treasure_id, slug):
     else:
         return make_response(jsonify({'404': 'not found'}))
 
+
+@clue_mod.route('/options/half-life/<string:treasure_id>', methods=['POST', 'GET'])
+def half_life(treasure_id):
+    return make_response(jsonify(Clue.return_to_start(treasure_id)))
+
+
+@clue_mod.route('/options/first', methods=['POST', 'GET'])
+def get_first_clue():
+    pass

@@ -4,6 +4,8 @@ from app import db
 import sqlalchemy
 from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy.dialects import postgresql as pg
+# filter array columns
+from sqlalchemy_filters import apply_filters
 
 
 class Base(db.Model):
@@ -97,12 +99,21 @@ class Clue(Base):
 
     @classmethod
     def get_next_clue(cls, slug, treasure_id):
-        res = cls.query.filter_by(slug=slug, treasure_id=treasure_id).first()
-        return res.serialize()
+        query = db.session.query(Clue)
+        filter_specs = [{'field': 'slug', 'op': 'any', 'value': slug}]
+        result = apply_filters(query, filter_specs)
+        more_filters = [{'field': 'treasure_id', 'op': '==', 'value': treasure_id}]
+        next_clue = apply_filters(result, more_filters)
+        return next_clue.first().serialize()
 
     @classmethod
     def get_clue(cls, treasure_id):
         return cls.query.filter_by(startpoint=True, treasure_id=treasure_id).first()
+
+    @classmethod
+    def return_to_start(cls, treasure_id):
+        result = cls.query.filter_by(startpoint=False, endpoint=False, treasure_id=treasure_id, is_correct=True).first()
+        return result.serialize()
 
 
 class ClueOptions(Base):
@@ -111,8 +122,7 @@ class ClueOptions(Base):
 
     name = db.Column(
         db.String(500),
-        nullable=False,
-        unique=True
+        nullable=False
     )
 
     clue_id = db.Column(
