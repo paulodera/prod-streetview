@@ -53,6 +53,10 @@ class Player(Base):
             'phone': self.phone
         }
 
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
     @classmethod
     def get_all_players(cls):
         return [p.serialize() for p in cls.query.all()]
@@ -69,13 +73,11 @@ class PlayerLeaderBoard(Base):
 
     time = db.Column(
         db.Integer,
-        unique = True,
         nullable = False
     )
 
     points = db.Column(
         db.Integer,
-        unique = True,
         nullable = False
     )
 

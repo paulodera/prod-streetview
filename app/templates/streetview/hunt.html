@@ -194,7 +194,7 @@ let x = setInterval(function() {
 let panorama;
 
 function initialize() {
-  panorama = new google.maps.StreetViewPanorama(
+    panorama = new google.maps.StreetViewPanorama(
     document.getElementById("panorama"),
     {
       position: { lat: -1.2595552637385474, lng: 36.785125526142544 },
@@ -228,11 +228,11 @@ const relocatePlayer = (optionId) => {
         {
             // the user got the last checkpoint correct, display message
             add_points(data.points);
-            console.log(data.points);
             $('#message_block').removeClass();
             $('#message_block').addClass("content_block-three success block_content");
             let points = localStorage.getItem('points');
             let timeRemaining = $("#timer").text();
+            let level_scrore = get_final_score(timeRemaining);
             clearInterval(x);
             let html = `
             <div class="icon icon_1"></div>
@@ -243,7 +243,7 @@ const relocatePlayer = (optionId) => {
                 <div class="pod">
                     <h2>SUCCESS</h2>
                     <p style="font-weight: bold;">{{data.treasure['description']}}</p>
-                    <h4><span>${points}</span>points</h4>
+                    <h4>Level score: <span>${level_scrore}</span>points</h4>
                     <h4><span>${timeRemaining}</span>time remaining</h4>
                     <a onclick="registerUser()">Redeem Prize</a>
                 </div>
@@ -255,52 +255,16 @@ const relocatePlayer = (optionId) => {
         } else if(data.was_endpoint && data.is_correct === false) {
             // dead-end, start half life
             add_points(data.points);
-            // relocator(data.coordinates, data.slug);
             let points = localStorage.getItem('points');
             let treasure_id = localStorage.getItem('treasure_id');
 
             $('#message_block').removeClass();
             $('#message_block').addClass("content_block-three failure block_content");
 
-            // TODO: get the first right clue option
             startHalfLife();
 
-            /*let html = `
-            <div class="icon icon_1"></div>
-            <div class="icon icon_2"></div>
-            <div class="icon icon_3"></div>
-            <div class="icon icon_4"></div>
-            <div class="wrapper">
-                <div class="pod">
-                    <h2>SUCCESS</h2>
-                    <p style="font-weight: bold;">{{data.treasure['description']}}</p>
-                    <h4><span>${points}</span>points</h4>
-                    <h4><span>${timeRemaining}</span>time remaining</h4>
-                    <a href="#">Redeem Prize</a>
-                </div>
-            </div>
-            `;
-
-            let html = ` render lost path div
-            <div class="icon icon_1"></div>
-            <div class="icon icon_2"></div>
-            <div class="icon icon_3"></div>
-            <div class="icon icon_4"></div>
-            <div class="wrapper">
-                <div class="pod">
-                    <h2>FAILED</h2>
-                    <h3>Seems you got lost</h3>
-                    <h4><span>${points}</span>points</h4>
-                    <a href="/hunt/${treasure_id}">Start the hunt again</a>
-                    <a href="/hunt/half-life/${treasure_id}">Start the hunt again</a>
-                </div>
-            </div>
-            `;
-            $('#message_block').html(html);
-            */
         } else {
             add_points(data.points);
-            console.log(data.points);
             relocator(data.coordinates, data.slug);
         }
 
@@ -318,7 +282,6 @@ const stopGame = () => {
     // stop the game when the timer stops
     let points = localStorage.getItem('points');
     let treasure_id = localStorage.getItem('treasure_id');
-
     $('#message_block').removeClass();
     $('#message_block').addClass("content_block-three failure block_content");
 
@@ -402,6 +365,28 @@ const add_points = (points) => {
     localStorage.setItem('points', total);
     $('#points').html(total); // update points
     return total;
+}
+
+
+const get_final_score = (time_spent) => {
+        let level_score = 5; // 5 points for each second saved
+		let time_spent_text = time_spent.replace(/[^0-9]/g,'');
+		let time_array = Array.from(time_spent_text);
+		let minutes_spent = time_array[0];
+		let seconds_spent = time_array[1];
+		if(time_array.length > 2){
+			seconds_spent = parseInt(seconds_spent+''+time_array[2]);
+		}
+
+      	if(minutes_spent > 0)
+      	{
+      		seconds_spent = seconds_spent + (minutes_spent * 60);
+      	}
+
+		let total_points =  Math.max(0, seconds_spent) * level_score;
+      	localStorage.setItem('points', total_points);
+
+      	return total_points;
 }
 
 </script>
