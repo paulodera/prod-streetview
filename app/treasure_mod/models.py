@@ -43,6 +43,18 @@ class Treasure(Base):
         db.Text,
         nullable=True
     )
+    objective = db.Column(
+        db.Text,
+        nullable=True
+    )
+    tag_line_1 = db.Column(
+        db.String(100),
+        nullable=True
+    )
+    tag_line_2 = db.Column(
+        db.String(100),
+        nullable=True
+    )
     is_active = db.Column(
         db.Boolean,
         nullable=False,

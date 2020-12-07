@@ -26,7 +26,7 @@
         <img src="{{ url_for('static', filename='streetview/images/main_title.svg') }}" alt="Streetview & Beyond" class="main_title" />
         <h2>Use your <span>Street Smarts</span> to beat our  <span>StreetView</span> challenges</h2>
         <a href=" {{ url_for('hunt.get_hunts') }} " class="btn main_btn btn_green">
-            <span>Start here</span>
+            <span>{{ data[0]['name'] }}</span>
             <div><img src="{{ url_for('static', filename='streetview/images/arrow.svg') }}" alt=""> </div>
         </a>
     </div>

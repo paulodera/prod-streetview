@@ -24,8 +24,8 @@
 {% block content %}
 <div class="content_section" style="background-image: url('/static/streetview/images/Screenshot_1.jpg')">
     <div class="content_pod">
-        <h1>STREET HUNT <span>NAME</span></h1>
-        <h2>Use your <span>Street Smarts</span> to beat our  <span>StreetView</span> challenges</h2>
+        <h1>{{ data[0]['tag_line_1'] }}<span>{{ data[0]['tag_line_2'] }}</span></h1>
+        <h2>Objective: {{ data[0]['objective'] }}</h2>
 
         {% if data %}
 
@@ -37,7 +37,7 @@
             </li>
             <li>
                 <a href="{{ url_for('hunt.start_hunt', treasure_id=row['id']) }}" class="btn_green">
-                    <span>{{ row['name'] }}</span>
+                    <span>Play now</span>
                     <img src="{{ url_for('static', filename='streetview/images/arrow.svg') }}"/>
                 </a>
             </li>

@@ -78,3 +78,8 @@ class PlayerLeaderBoard(Base):
         unique = True,
         nullable = False
     )
+
+    player_id = db.Column(
+        UUID(as_uuid=True),
+        db.ForeignKey('player.id', ondelete='Cascade', onupdate='Cascade')
+    )
