@@ -228,6 +228,7 @@ const relocatePlayer = (optionId) => {
         {
             // the user got the last checkpoint correct, display message
             add_points(data.points);
+            console.log(data.points);
             $('#message_block').removeClass();
             $('#message_block').addClass("content_block-three success block_content");
             let points = localStorage.getItem('points');
@@ -299,6 +300,7 @@ const relocatePlayer = (optionId) => {
             */
         } else {
             add_points(data.points);
+            console.log(data.points);
             relocator(data.coordinates, data.slug);
         }
 

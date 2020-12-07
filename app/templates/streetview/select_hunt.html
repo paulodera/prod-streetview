@@ -33,11 +33,11 @@
         <ul>
             <li>01</li>
             <li>
-                <div>Time {{ row['time'] }}.00.00</div>
+                <div>Time {{ row['time'] }}.00</div>
             </li>
             <li>
                 <a href="{{ url_for('hunt.start_hunt', treasure_id=row['id']) }}" class="btn_green">
-                    <span>Let’s Go</span>
+                    <span>{{ row['name'] }}</span>
                     <img src="{{ url_for('static', filename='streetview/images/arrow.svg') }}"/>
                 </a>
             </li>
