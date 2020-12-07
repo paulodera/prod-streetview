@@ -12,7 +12,6 @@ build/
 *.egg-info/
 _mailinglist
 .tox/
-migrations/
 postgres-data/
 .cache/
 .pytest_cache/
