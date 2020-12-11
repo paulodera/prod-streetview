@@ -1,4 +1,5 @@
 from sqlalchemy.dialects.postgresql import UUID
+import uuid
 from app import db
 import sqlalchemy
 
@@ -6,15 +7,15 @@ import sqlalchemy
 class Base(db.Model):
 
     __abstract__ = True
-
     id = db.Column(
         UUID(as_uuid=True),
-        default=sqlalchemy.text("uuid_generate_v4()"),
+        default=uuid.uuid4,
         primary_key=True,
         unique=True,
         nullable=False,
         index=True
     )
+
     date_created = db.Column(
         db.DateTime,
         default=db.func.current_timestamp()
@@ -41,7 +42,7 @@ class Player(Base):
         nullable=False
     )
 
-    player_scores = db.relationship("PlayerLeaderboard", backref="player")
+    player_leaderboard = db.relationship("PlayerLeaderBoard", backref="player")
 
     def __init__(self, name, phone):
         self.name = name
@@ -61,6 +62,10 @@ class Player(Base):
     def get_all_players(cls):
         return [p.serialize() for p in cls.query.all()]
 
+    @classmethod
+    def check_player_details(cls, phone):
+        return cls.query.filter_by(phone=phone).first()
+
 
 class PlayerLeaderBoard(Base):
 
@@ -72,7 +77,7 @@ class PlayerLeaderBoard(Base):
     )
 
     time = db.Column(
-        db.Integer,
+        db.String(10),
         nullable = False
     )
 
@@ -85,3 +90,21 @@ class PlayerLeaderBoard(Base):
         UUID(as_uuid=True),
         db.ForeignKey('player.id', ondelete='Cascade', onupdate='Cascade')
     )
+
+    def __init__(self, treasure_id, time, points, player_id):
+        self.treasure_id = treasure_id
+        self.time = time
+        self.points = points
+        self.player_id = player_id
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def check_play_status(cls, player_id, treasure_id):
+        """
+        check treasure hunt status of the player
+        :return:
+        """
+        return cls.query.filter_by(treasure_id=treasure_id, player_id=player_id).first()

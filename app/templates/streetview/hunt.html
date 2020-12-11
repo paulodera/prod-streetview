@@ -58,6 +58,44 @@
     .form-container .btn:hover, .open-button:hover {
       opacity: 1;
     }
+
+    .alert {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        height: 20px;
+        width: 300px;
+        display: none;
+        font-size: large;
+        padding: 30px;
+        text-align: center;
+        z-index: 9;
+    }
+
+    .alert-success {
+        background-color: #2cb34a;
+    }
+
+    .alert-danger {
+        background-color: #ed1c23;
+    }
+
+    /*.closebtn {
+      margin-left: 15px;
+      color: white;
+      font-weight: bold;
+      float: right;
+      font-size: 22px;
+      line-height: 20px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .closebtn:hover {
+      color: black;
+    }*/
 </style>
 
 {% endblock %}
@@ -110,12 +148,12 @@
 
 <div class="content_section" >
     <div id="panorama" style="width: 100%; height: 100%;"></div>
-    <div class="content_block-one">
+   <!-- <div class="content_block-one">
         <h2>street<br/>hunt<br/><span>name</span></h2>
         <p>{{ data.treasure['description'] }}</p>
         <img src="{{ url_for('static', filename='streetview/images/egg.png') }}" alt="">
         <div>Look around to find the marker</div>
-    </div>
+    </div>-->
     <div class="content_block-two block_content danger" id="message_block">
         <div class="icon icon_1"></div>
         <div class="icon icon_2"></div>
@@ -138,12 +176,17 @@
         <form action="" class="form-container">
             <h1>Register Details</h1>
 
-            <input type="text" name="name" placeholder="Enter your name" required/>
+            <input type="text" name="name" id="name" placeholder="Enter your name" required/>
 
-            <input type="text" name="phone" placeholder="Enter phone number" required/>
+            <input type="text" name="phone" id="phone" placeholder="Enter phone number" required/>
 
             <button type="submit" class="btn">Register Me</button>
         </form>
+    </div>
+
+    <div class="alert">
+<!--      <span class="closebtn" onclick="closeMsg()">&times;</span>-->
+
     </div>
 </div>
 
@@ -168,7 +211,7 @@ $( document ).ready(function() {
  */
 let d1 = new Date (),
     d2 = new Date ( d1 );
-d2.setMinutes ( d1.getMinutes() + {{ data.treasure['time'] }} );
+d2.setMinutes ( d1.getMinutes() + {{ data.treasure['time']|safe }} );
 
 let countDownDate = d2.getTime();
 
@@ -193,11 +236,12 @@ let x = setInterval(function() {
  */
 let panorama;
 
+
 function initialize() {
     panorama = new google.maps.StreetViewPanorama(
     document.getElementById("panorama"),
     {
-      position: { lat: -1.2595552637385474, lng: 36.785125526142544 },
+      position: { lat: {{ data['landing_pos']['lat']|safe }}, lng: {{ data['landing_pos']['lng']|safe }} },
       pov: { heading: 165, pitch: 0 },
       zoom: 1,
       zoomControlOptions: { position: google.maps.ControlPosition.LEFT_CENTER },
@@ -232,6 +276,7 @@ const relocatePlayer = (optionId) => {
             $('#message_block').addClass("content_block-three success block_content");
             let points = localStorage.getItem('points');
             let timeRemaining = $("#timer").text();
+            localStorage.setItem('time', timeRemaining);
             let level_scrore = get_final_score(timeRemaining);
             clearInterval(x);
             let html = `
@@ -250,7 +295,7 @@ const relocatePlayer = (optionId) => {
             </div>
             `;
             $('#message_block').html(html);
-            relocator(data.coordinates, data.slug);
+            relocator(data.coordinates, data.slug, false);
 
         } else if(data.was_endpoint && data.is_correct === false) {
             // dead-end, start half life
@@ -304,16 +349,19 @@ const stopGame = () => {
 }
 
 
-function relocator(coordinates, slug) {
-    let newPos = coordinates.split(',');
+function relocator(coordinates, slug, next=true) {
+    let newPos = splitCoordinates(coordinates);
     let lat = newPos[0];
     let lng = newPos[1];
     const newPosition = new google.maps.LatLng({lat: Number(lat), lng: Number(lng)});
-    get_next_clue(false, slug);
+    if(next === true) get_next_clue(false, slug);
 
     panorama.setPosition(newPosition);
 }
 
+const splitCoordinates = (coordinates) => {
+    return coordinates.split(',')
+}
 
 const startHalfLife = () => {
     get_next_clue(true);
@@ -388,6 +436,47 @@ const get_final_score = (time_spent) => {
 
       	return total_points;
 }
+
+$('#userForm').submit((e) => {
+    $('#userForm').fadeOut();
+
+    let username = $('#name').val();
+    let phone = $('#phone').val();
+    let points = localStorage.getItem('points');
+    let time = localStorage.getItem('time');
+    let treasure_id = localStorage.getItem('treasure_id');
+
+    let data = {
+        'username': username,
+        'phone': phone,
+        'points': points,
+        'time': time,
+        'treasure_id': treasure_id
+    }
+
+    $.ajax({
+      type: "POST",
+      url: '/player/register',
+      data: data,
+      success: (result) => {
+          if(result.status === 1) {
+              $('.alert').addClass('alert-danger');
+          } else {
+              $('.alert').addClass('alert-success');
+          }
+          let msg = "<h2>"+result.message+"</h2>";
+          $('.alert').html(msg);
+          $(".alert").fadeIn(2000);
+          $('.alert').fadeOut(5000, () => {
+            window.location.href = "{{ url_for('start') }}"; //TODO: redirect user to the start page
+          });
+      },
+      dataType: 'json'
+    });
+
+    e.preventDefault();
+
+});
 
 </script>
 

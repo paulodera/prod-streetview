@@ -28,6 +28,7 @@ from app.auth_mod.controllers import auth_mod as auth_module
 from app.treasure_mod.controllers import treasure_mod as treasure_module
 from app.hunt_mod.controllers import hunt_mod as hunt_module
 from app.clue_mod.controllers import clue_mod as clue_module
+from app.player_mod.controllers import player_mod as player_module
 
 
 @login_manager.user_loader
@@ -45,6 +46,7 @@ app.register_blueprint(auth_module)
 app.register_blueprint(treasure_module)
 app.register_blueprint(hunt_module)
 app.register_blueprint(clue_module)
+app.register_blueprint(player_module)
 
 
 db.create_all()

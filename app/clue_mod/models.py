@@ -166,6 +166,11 @@ class ClueOptions(Base):
         return [c.serialize() for c in cls.query.filter_by(clue_id=clue_id).all()]
 
     @classmethod
+    def get_start_position(cls, clue_id):
+        data = cls.query.filter_by(clue_id=clue_id, is_correct=True).first()
+        return data.coordinates
+
+    @classmethod
     def get_clue_details(cls, option_id):
         res = cls.query.filter_by(id=option_id).first()
         return res.serialize()

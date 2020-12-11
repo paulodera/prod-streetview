@@ -61,6 +61,8 @@ class Treasure(Base):
         default=True
     )
 
+    player_leaderboard = db.relationship("PlayerLeaderBoard", backref="treasure")
+
     def __int__(self, name, time, description, is_active):
         self.name = name
         self.time = time
@@ -90,9 +92,19 @@ class Treasure(Base):
         return cls.query.all()
 
     @classmethod
-    def get_active_hunts(cls):
-        return cls.query.filter_by(is_active=True).all()
+    def get_active_hunt(cls):
+        return cls.query.filter_by(is_active=True).first()
 
     @classmethod
     def get_treasure_details(cls, treasure_id):
         return cls.query.filter_by(id=treasure_id, is_active=True).first()
+
+    @classmethod
+    def check_hunt_status(cls, treasure_id):
+        """
+        check if the treasure is active or not
+        :param treasure_id:
+        :return:
+        """
+        treasure_details = cls.query.filter_by(id=treasure_id).first()
+        return treasure_details.is_active

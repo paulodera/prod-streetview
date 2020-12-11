@@ -6,15 +6,13 @@
     <h2>02</h2>
     <h3><span>EXPLORE</span>Street hunts</h3>
     <ul class="content_pod-b">
-        {% for hunt in data %}
-            <li class="default">
-                <a href="#" class="btn_green btn">
-                    <span>PLAY</span>
-                    <h6>{{ hunt['name'] }}</h6>
-                    <div><img src="{{ url_for('static', filename='streetview/images/arrow.svg') }}" alt=""></div>
-                </a>
-            </li>
-        {% endfor %}
+        <li class="default">
+            <a href="#" class="btn_green btn">
+                <span>PLAY</span>
+                <h6>{{ data['name'] }}</h6>
+                <div><img src="{{ url_for('static', filename='streetview/images/arrow.svg') }}" alt=""></div>
+            </a>
+        </li>
     </ul>
 </div>
 
@@ -24,26 +22,22 @@
 {% block content %}
 <div class="content_section" style="background-image: url('/static/streetview/images/Screenshot_1.jpg')">
     <div class="content_pod">
-        <h1>{{ data[0]['tag_line_1'] }}<span>{{ data[0]['tag_line_2'] }}</span></h1>
-        <h2>Objective: {{ data[0]['objective'] }}</h2>
+        <h1>{{ data['tag_line_1'] }}<span>{{ data['tag_line_2'] }}</span></h1>
+        <h2>Objective: {{ data['objective'] }}</h2>
 
         {% if data %}
-
-        {% for row in data %}
         <ul>
             <li>01</li>
             <li>
-                <div>Time {{ row['time'] }}.00</div>
+                <div>Time {{ data['time'] }}.00</div>
             </li>
             <li>
-                <a href="{{ url_for('hunt.start_hunt', treasure_id=row['id']) }}" class="btn_green">
+                <a href="{{ url_for('hunt.start_hunt', treasure_id=data['id']) }}" class="btn_green">
                     <span>Play now</span>
                     <img src="{{ url_for('static', filename='streetview/images/arrow.svg') }}"/>
                 </a>
             </li>
         </ul>
-        {% endfor %}
-
         {% else %}
             <br/>
             <h2>No hunts available today.</h2>
