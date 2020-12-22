@@ -1,12 +1,13 @@
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import desc
 import uuid
 from app import db
 import sqlalchemy
 
 
 class Base(db.Model):
-
     __abstract__ = True
+
     id = db.Column(
         UUID(as_uuid=True),
         default=uuid.uuid4,
@@ -20,6 +21,7 @@ class Base(db.Model):
         db.DateTime,
         default=db.func.current_timestamp()
     )
+
     date_updated = db.Column(
         db.DateTime,
         default=db.func.current_timestamp(),
@@ -28,7 +30,6 @@ class Base(db.Model):
 
 
 class Player(Base):
-
     __tablename__ = 'player'
 
     name = db.Column(
@@ -68,7 +69,6 @@ class Player(Base):
 
 
 class PlayerLeaderBoard(Base):
-
     __tablename__ = 'player_leaderboard'
 
     treasure_id = db.Column(
@@ -78,12 +78,12 @@ class PlayerLeaderBoard(Base):
 
     time = db.Column(
         db.String(10),
-        nullable = False
+        nullable=False
     )
 
     points = db.Column(
         db.Integer,
-        nullable = False
+        nullable=False
     )
 
     player_id = db.Column(
@@ -108,3 +108,14 @@ class PlayerLeaderBoard(Base):
         :return:
         """
         return cls.query.filter_by(treasure_id=treasure_id, player_id=player_id).first()
+
+    @classmethod
+    def get_player_rankings(cls):
+        """
+        generate player leaderboard on current active hunt
+        {name, points}
+        :return:
+        """
+        result = cls.query.filter().order_by(desc("points")).limit(5).all()
+        filtered_result = [x for x in result if x.treasure.is_active == True]
+        return filtered_result

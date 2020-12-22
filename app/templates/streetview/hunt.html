@@ -120,6 +120,24 @@
 
 {% endblock %}
 
+{% block leaderboard %}
+
+<ul class="content_pod-b">
+
+    {% for x in data['leaderboard'] %}
+        <li class="default">
+            <a href="#" class="btn_green btn">
+                <span>1</span>
+                <h6>{{ x.player.name }}</h6>
+                <div>{{ x.points }}</div>
+            </a>
+        </li>
+    {% endfor %}
+
+</ul>
+
+{% endblock %}
+
 {% block game_tray %}
 <div class="second_header">
     <div class="item_center">
@@ -185,8 +203,7 @@
     </div>
 
     <div class="alert">
-<!--      <span class="closebtn" onclick="closeMsg()">&times;</span>-->
-
+        <!-- <span class="closebtn" onclick="closeMsg()">&times;</span>-->
     </div>
 </div>
 
@@ -196,12 +213,13 @@
 <script>
 /***
  * **************************************
- * Store Game Variables
+ * Store initial game variables
  */
 $( document ).ready(function() {
     localStorage.setItem('points', 0);
     localStorage.setItem('treasure_id', '{{ data.treasure['id']|safe }}' );
     localStorage.setItem('clue', 1);
+    localStorage.setItem('stray_path', 0);
 });
 
 
@@ -309,6 +327,12 @@ const relocatePlayer = (optionId) => {
             startHalfLife();
 
         } else {
+            if(data.is_correct === false)
+            {
+                let stray_path = localStorage.getItem('stray_path');
+                stray_path++;
+                localStorage.setItem('stray_path', stray_path);
+            }
             add_points(data.points);
             relocator(data.coordinates, data.slug);
         }
@@ -317,14 +341,19 @@ const relocatePlayer = (optionId) => {
 
 }
 
-
+/****
+ * display user form on completion
+ */
 const registerUser = () => {
     $('#message_block').hide()
     $("#userForm").show();
 }
 
+
+/*****
+ * automatically end game when the timer stops
+ */
 const stopGame = () => {
-    // stop the game when the timer stops
     let points = localStorage.getItem('points');
     let treasure_id = localStorage.getItem('treasure_id');
     $('#message_block').removeClass();
@@ -346,9 +375,17 @@ const stopGame = () => {
     </div>
     `;
     $('#message_block').html(html);
+
+    localStorage.clear();
 }
 
 
+/*******
+ * set new coordinates
+ * @param coordinates
+ * @param slug
+ * @param next
+ */
 function relocator(coordinates, slug, next=true) {
     let newPos = splitCoordinates(coordinates);
     let lat = newPos[0];
@@ -359,15 +396,28 @@ function relocator(coordinates, slug, next=true) {
     panorama.setPosition(newPosition);
 }
 
+/*****
+ * split coordinates
+ * @param coordinates
+ * @returns {*|string[]}
+ */
 const splitCoordinates = (coordinates) => {
     return coordinates.split(',')
 }
 
+/***
+ * return user to second clue
+ */
 const startHalfLife = () => {
     get_next_clue(true);
 }
 
 
+/***
+ * get the next associated clue
+ * @param halfLife
+ * @param slug
+ */
 const get_next_clue = (halfLife=false, slug=null) => {
     let next_clue;
     let endpoint = '/clue/options/';
@@ -381,7 +431,6 @@ const get_next_clue = (halfLife=false, slug=null) => {
         endpoint = endpoint + treasure_id + '/' + slug;
         next_clue = parseInt(clue_no) + 1
     }
-
 
     $.get( endpoint,  (data) => {
         localStorage.setItem('clue', next_clue);
@@ -406,7 +455,11 @@ const get_next_clue = (halfLife=false, slug=null) => {
     });
 }
 
-
+/*****
+ * add corresponding points
+ * @param points
+ * @returns {number}
+ */
 const add_points = (points) => {
     let current_points = localStorage.getItem('points');
     let total = parseInt(current_points) + parseInt(points);
@@ -415,28 +468,40 @@ const add_points = (points) => {
     return total;
 }
 
-
+/****
+ * calculate the users final score upon completion
+ * @param time_spent {string}
+ * @returns {number}
+ */
 const get_final_score = (time_spent) => {
-        let level_score = 5; // 5 points for each second saved
+        let level_score = 5;
+        let deductibles = 0;
 		let time_spent_text = time_spent.replace(/[^0-9]/g,'');
 		let time_array = Array.from(time_spent_text);
 		let minutes_spent = time_array[0];
 		let seconds_spent = time_array[1];
-		if(time_array.length > 2){
+		if(time_array.length > 2) {
 			seconds_spent = parseInt(seconds_spent+''+time_array[2]);
 		}
 
-      	if(minutes_spent > 0)
-      	{
+      	if(minutes_spent > 0) {
       		seconds_spent = seconds_spent + (minutes_spent * 60);
       	}
 
 		let total_points =  Math.max(0, seconds_spent) * level_score;
+      	let stray_path = localStorage.getItem('stray_path');
+      	if(stray_path > 0){
+      	    deductibles = stray_path * 2;
+        }
+      	total_points = total_points - deductibles;
       	localStorage.setItem('points', total_points);
-
       	return total_points;
 }
 
+
+/***
+ * submit user details
+ */
 $('#userForm').submit((e) => {
     $('#userForm').fadeOut();
 
@@ -468,12 +533,12 @@ $('#userForm').submit((e) => {
           $('.alert').html(msg);
           $(".alert").fadeIn(2000);
           $('.alert').fadeOut(5000, () => {
-            window.location.href = "{{ url_for('start') }}"; //TODO: redirect user to the start page
+            window.location.href = "{{ url_for('start') }}";
           });
       },
       dataType: 'json'
     });
-
+    localStorage.clear();
     e.preventDefault();
 
 });

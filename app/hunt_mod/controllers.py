@@ -2,13 +2,17 @@ from flask import render_template, redirect, flash, g, url_for, Blueprint, make_
 
 from app.treasure_mod.models import Treasure
 from app.clue_mod.models import Clue, ClueOptions
+from app.player_mod.models import PlayerLeaderBoard
 
 hunt_mod = Blueprint('hunt', __name__, url_prefix='/hunt', template_folder='streetview', static_folder='streetview')
 
 
 @hunt_mod.route('/all', methods=['GET'])
 def get_hunts():
-    data = Treasure.get_active_hunt()
+    data = {
+        'treasure': Treasure.get_active_hunt(),
+        'leaderboard': PlayerLeaderBoard.get_player_rankings()
+    }
     return render_template('streetview/select_hunt.html', data=data)
 
 
@@ -20,11 +24,14 @@ def start_hunt(treasure_id):
     landing_coordinates = ClueOptions.get_start_position(clue_data.id)
     pos = landing_coordinates.split(",")
     all_hunts = Treasure.get_all() # to display on the menu
+    leaderboard = PlayerLeaderBoard.get_player_rankings()
+
     data = {
         'clue': clue_data,
         'treasure': treasure_data,
         'options': options_data,
         'hunts': all_hunts,
+        'leaderboard': leaderboard,
         'landing_pos': {
             'lat': pos[0],
             'lng': pos[1]

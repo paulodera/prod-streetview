@@ -9,7 +9,7 @@
         <li class="default">
             <a href="#" class="btn_green btn">
                 <span>PLAY</span>
-                <h6>{{ data['name'] }}</h6>
+                <h6>{{ data['treasure']['name'] }}</h6>
                 <div><img src="{{ url_for('static', filename='streetview/images/arrow.svg') }}" alt=""></div>
             </a>
         </li>
@@ -18,21 +18,39 @@
 
 {% endblock %}
 
+{% block leaderboard %}
+
+<ul class="content_pod-b">
+    {% for x in data['leaderboard']  %}
+        <li class="default">
+            <a href="#" class="btn_green btn">
+                <span>1</span>
+                <h6>{{ x.player.name }}</h6>
+                <div>{{ x.points }}</div>
+            </a>
+        </li>
+    {% endfor %}
+
+</ul>
+
+{% endblock %}
+
 
 {% block content %}
+
 <div class="content_section" style="background-image: url('/static/streetview/images/Screenshot_1.jpg')">
     <div class="content_pod">
-        <h1>{{ data['tag_line_1'] }}<span>{{ data['tag_line_2'] }}</span></h1>
-        <h2>Objective: {{ data['objective'] }}</h2>
+        <h1>{{ data['treasure']['tag_line_1'] }}<span>{{ data['treasure']['tag_line_2'] }}</span></h1>
+        <h2>Objective: {{ data['treasure']['objective'] }}</h2>
 
-        {% if data %}
+        {% if data['treasure'] %}
         <ul>
             <li>01</li>
             <li>
-                <div>Time {{ data['time'] }}.00</div>
+                <div>Time {{ data['treasure']['time'] }}.00</div>
             </li>
             <li>
-                <a href="{{ url_for('hunt.start_hunt', treasure_id=data['id']) }}" class="btn_green">
+                <a href="{{ url_for('hunt.start_hunt', treasure_id=data['treasure']['id']) }}" class="btn_green">
                     <span>Play now</span>
                     <img src="{{ url_for('static', filename='streetview/images/arrow.svg') }}"/>
                 </a>

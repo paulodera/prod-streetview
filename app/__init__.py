@@ -24,6 +24,7 @@ def not_found(error):
 
 from app.auth_mod.models import Auth
 from app.treasure_mod.models import Treasure
+from app.player_mod.models import PlayerLeaderBoard
 from app.auth_mod.controllers import auth_mod as auth_module
 from app.treasure_mod.controllers import treasure_mod as treasure_module
 from app.hunt_mod.controllers import hunt_mod as hunt_module
@@ -38,7 +39,10 @@ def load_user(user_id):
 
 @app.route('/', methods=['GET'])
 def start():
-    data = Treasure.get_all()
+    data = {
+        'treasure': Treasure.get_all(),
+        'leaderboard': PlayerLeaderBoard.get_player_rankings()
+    }
     return render_template('streetview/start.html', data=data)
 
 

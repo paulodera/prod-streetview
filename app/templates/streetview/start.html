@@ -6,7 +6,7 @@
     <h2>02</h2>
     <h3><span>EXPLORE</span>Street hunts</h3>
     <ul class="content_pod-b">
-        {% for hunt in data %}
+        {% for hunt in data['treasure']  %}
             <li class="default">
                 <a href="#" class="btn_green btn">
                     <span>PLAY</span>
@@ -17,6 +17,24 @@
         {% endfor %}
     </ul>
 </div>
+
+{% endblock %}
+
+{% block leaderboard %}
+
+<ul class="content_pod-b">
+
+    {% for x in data['leaderboard']  %}
+        <li class="default">
+            <a href="#" class="btn_green btn">
+                <span>1</span>
+                <h6>{{ x.player.name }}</h6>
+                <div>{{ x.points }}</div>
+            </a>
+        </li>
+    {% endfor %}
+
+</ul>
 
 {% endblock %}
 
