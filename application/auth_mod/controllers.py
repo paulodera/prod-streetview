@@ -4,11 +4,11 @@ from flask_login import login_user, logout_user, login_required
 
 from werkzeug.security import check_password_hash
 
-from app import db
+from application import db
 
-from app.auth_mod.forms import LoginForm
+from application.auth_mod.forms import LoginForm
 
-from app.auth_mod.models import Auth
+from application.auth_mod.models import Auth
 
 auth_mod = Blueprint('auth', __name__, url_prefix='/auth', template_folder='template', static_folder='static')
 

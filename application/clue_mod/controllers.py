@@ -1,6 +1,6 @@
 from flask import render_template, redirect, flash, g, url_for, Blueprint, jsonify, make_response
 
-from app.clue_mod.models import Clue, ClueOptions
+from application.clue_mod.models import Clue, ClueOptions
 
 clue_mod = Blueprint('clue', __name__, url_prefix='/clue', template_folder='streetview', static_folder='streetview')
 

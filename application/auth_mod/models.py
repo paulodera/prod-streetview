@@ -1,5 +1,5 @@
 from sqlalchemy.dialects.postgresql import UUID
-from app import db
+from application import db
 import sqlalchemy
 
 

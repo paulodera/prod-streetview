@@ -1,6 +1,6 @@
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.types import ARRAY
-from app import db
+from application import db
 import sqlalchemy
 from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy.dialects import postgresql as pg

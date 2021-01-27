@@ -1,7 +1,7 @@
 from flask import render_template, redirect, flash, g, url_for, Blueprint, make_response, jsonify, request, escape
-from app.player_mod.models import Player, PlayerLeaderBoard
-from app.treasure_mod.models import Treasure
-from app import db
+from application.player_mod.models import Player, PlayerLeaderBoard
+from application.treasure_mod.models import Treasure
+from application import db
 
 
 player_mod = Blueprint('player',

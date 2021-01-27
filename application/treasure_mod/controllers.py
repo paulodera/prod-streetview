@@ -1,14 +1,14 @@
 from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for
 from flask_login import login_required
 
-from app import db
-from app.treasure_mod.models import Treasure
+from application import db
+from application.treasure_mod.models import Treasure
 
-from app.treasure_mod.tables import TreasureTable
-from app.treasure_mod.forms import RegisterTreasure
+from application.treasure_mod.tables import TreasureTable
+from application.treasure_mod.forms import RegisterTreasure
 
 # helper function
-from app.treasure_mod.helpers import save_changes
+from application.treasure_mod.helpers import save_changes
 
 treasure_mod = Blueprint('treasure', __name__, url_prefix='/treasure', template_folder='treasure',
                          static_folder='static')

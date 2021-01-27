@@ -1,8 +1,8 @@
 from flask import render_template, redirect, flash, g, url_for, Blueprint, make_response, jsonify
 
-from app.treasure_mod.models import Treasure
-from app.clue_mod.models import Clue, ClueOptions
-from app.player_mod.models import PlayerLeaderBoard
+from application.treasure_mod.models import Treasure
+from application.clue_mod.models import Clue, ClueOptions
+from application.player_mod.models import PlayerLeaderBoard
 
 hunt_mod = Blueprint('hunt', __name__, url_prefix='/hunt', template_folder='streetview', static_folder='streetview')
 

@@ -1,7 +1,7 @@
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import desc
 import uuid
-from app import db
+from application import db
 import sqlalchemy
 
 

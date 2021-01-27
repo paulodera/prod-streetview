@@ -2,7 +2,7 @@
 treasure hunt helper functions
 """
 
-from app.treasure_mod.models import Treasure
+from application.treasure_mod.models import Treasure
 
 
 def save_changes(treasure, form, new=False):
