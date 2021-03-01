@@ -147,7 +147,7 @@ def edit_option(id):
 
         # update form data
         if request.method == 'POST':
-            save_option(option_check, form):
+            save_option(option_check, form)
             flash("Update is successful", "success")
             return redirect('/clue/option')
         
