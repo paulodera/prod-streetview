@@ -1,22 +1,32 @@
 from flask_wtf import Form
-from wtforms import StringField, IntegerField, SubmitField, TextAreaField
-from wtforms.validators import DataRequired
+from wtforms import StringField, IntegerField, TextAreaField, SubmitField
+from wtforms.validators import DataRequired, Length
 
 
 class RegisterTreasure(Form):
-    """
-    new treasure hunt entry
-    """
     name = StringField(
-        'Hunt name',
+        'Name',
+        validators=[DataRequired(), Length(max=50)]
+    )
+    time = IntegerField(
+        'Time',
         validators=[DataRequired()]
     )
     description = TextAreaField(
-        'Hunt description'
-    )
-    time = IntegerField(
-        'Total time',
+        'Description',
         validators=[DataRequired()]
     )
-    submit = SubmitField('Add Treasure')
-
+    objective = TextAreaField(
+        'Objective',
+        validators=[DataRequired()]
+    )
+    tag_line_1 = StringField(
+        'Primary Tag Line',
+        validators=[DataRequired(), Length(max=20)]
+    )
+    tag_line_2 = StringField(
+        'Secondary Tag Line',
+        validators=[DataRequired(), Length(max=20)]
+    )
+    
+    submit=SubmitField('Submit')

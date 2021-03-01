@@ -1,0 +1,118 @@
+<!-- treasure/new_template.html -->
+
+{% extends 'base.html' %}
+
+{% block sidebar %}
+
+    <li class="nav-item active">
+        <a class="nav-link" href="javascript:;">
+          <i class="material-icons">map</i>
+          <p>Treasures</p>
+        </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="javascript:;">
+        <i class="material-icons">search</i>
+        <p>Clues</p>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="javascript:;">
+        <i class="material-icons">list</i>
+        <p>Options</p>
+      </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="javascript:;">
+          <i class="material-icons">leaderboard</i>
+          <p>Leaderboard</p>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="javascript:;">
+          <i class="material-icons">settings</i>
+          <p>Profile</p>
+        </a>
+    </li>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="col-md-8 col-12 mr-auto ml-auto">
+    <div class="card">
+        <div class="card-header card-header-icon card-header-success">
+          <div class="card-icon">
+            <i class="material-icons">add</i>
+          </div>
+          <h4 class="card-title">Edit Clue</h4>
+        </div>
+        <div class="card-body">
+          <form class="form" method="POST" role="form" accept-charset="UTF-8">
+              <div class="col-md-8 mr-auto ml-auto">
+                <div class="form-group">
+                  <label class="bmd-label-floating">Treasure</label>
+                  <select class="selectpicker" data-style="select-with-transition" name="treasure_id" data-size="7">
+                    {% for treasure in data['treasures'] %}
+                    <option value="{{ treasure[0] }}" {% if data['clue_data']['treasure_id'] == treasure[0] %} selected {% endif %}>{{ treasure[1] }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <br/>
+              <div class="col-md-8 mr-auto ml-auto">
+                <div class="form-group">
+                  <label class="bmd-label-floating">Clue description</label>
+                  <input name="description" value="{{ data['clue_data']['description'] }}" id="description" rows="4" class="form-control">
+                </div>
+              </div>
+              <br/>
+              
+              <h4 class="title">Points</h4>
+              <div class="togglebutton">
+                <label>
+                  <input type="checkbox" name='startpoint' {% if data['clue_data']['startpoint']|string == 'True' %} checked="" {% endif %}>
+                  <span class="toggle"></span>
+                  Startpoint
+                </label>
+              </div>
+              <div class="togglebutton">
+                <label>
+                  <input type="checkbox" name='endpoint' {% if data['clue_data']['endpoint']|string == 'True' %} checked="" {% endif %}>
+                  <span class="toggle"></span>
+                  Endpoint
+                </label>
+              </div>
+              <div class="togglebutton">
+                <label>
+                  <input type="checkbox" name='is_correct' {% if data['clue_data']['is_correct']|string == 'True' %} checked="" {% endif %}>
+                  <span class="toggle"></span>
+                  Correct path?
+                </label>
+              </div>
+              <br/>
+              <div class="form-group">
+                <label class="bmd-label-floating">Clue slugs (comma separated)</label>
+                <input type="text" value="{{ data['clue_data']['slug']|string }}" name="slug" class="form-control">
+              </div>
+              <br/>
+              <div class="form-group">
+                <label class="bmd-label-floating">Marker Position</label>
+                <input type="text" name="marker_pos" value="{{ data['clue_data']['marker_pos'] }}" class="form-control">
+                
+              </div>
+              <button class="btn btn-success btn-lg pull-right" type="submit">Submit</button>
+
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="clearfix"></div>
+          </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

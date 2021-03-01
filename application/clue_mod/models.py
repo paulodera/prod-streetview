@@ -88,14 +88,19 @@ class Clue(Base):
 
     def serialize(self):
         return {
+            'id': self.id,
             'description': self.description,
             'endpoint': self.endpoint,
+            'treasure_name': self.treasure.name,
             'startpoint': self.startpoint,
             'slug': self.slug,
             'marker_pos': self.marker_pos,
             'is_correct': self.is_correct,
             'options': [opt.serialize() for opt in self.clue_options]
         }
+    
+    def save(self):
+        db.session.add(self)
 
     @classmethod
     def get_next_clue(cls, slug, treasure_id):
@@ -111,9 +116,21 @@ class Clue(Base):
         return cls.query.filter_by(startpoint=True, treasure_id=treasure_id).first()
 
     @classmethod
+    def get_option_clues(cls):
+        return [(x.id, x.description) for x in cls.query.all()]
+
+    @classmethod
     def return_to_start(cls, treasure_id):
         result = cls.query.filter_by(startpoint=False, endpoint=False, treasure_id=treasure_id, is_correct=True).first()
         return result.serialize()
+    
+    @classmethod
+    def get_all_clues(cls):
+        return [res.serialize() for res in cls.query.all()]
+    
+    @classmethod
+    def get_clue_by_id(cls, clue_id):
+        return cls.query.filter_by(id=clue_id).first()
 
 
 class ClueOptions(Base):
@@ -150,17 +167,30 @@ class ClueOptions(Base):
         default=False
     )
 
+    def __init__(self, name, clue_id, slug, coordinates, points, is_correct):
+        self.name = name
+        self.slug = slug
+        self.clue_id = clue_id
+        self.coordinatcoordinates =coordinates
+        self.points = points
+        self.is_correct = is_correct
+
     def serialize(self):
         return {
             'id': self.id,
             'name': self.name,
+            'clue': self.clue.description,
+            'treasure': self.clue.treasure.name,
             'slug': self.slug,
             'points': self.points,
             'coordinates': self.coordinates,
             'is_correct': self.is_correct,
             'was_endpoint': self.clue.endpoint
         }
-
+    
+    def save(self):
+        db.session.add(self)
+    
     @classmethod
     def get_clue_options(cls, clue_id):
         return [c.serialize() for c in cls.query.filter_by(clue_id=clue_id).all()]
@@ -174,3 +204,12 @@ class ClueOptions(Base):
     def get_clue_details(cls, option_id):
         res = cls.query.filter_by(id=option_id).first()
         return res.serialize()
+    
+    @classmethod
+    def fetch_all_options(cls):
+        return [res.serialize() for res in cls.query.all()]
+
+    @classmethod
+    def fetch_option_details(cls, option_id):
+        return cls.query.filter_by(id=option_id).first()
+

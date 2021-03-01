@@ -2,6 +2,7 @@ from flask import Flask, render_template
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_wtf.csrf import CSRFProtect
 
 
 application = Flask(__name__)
@@ -9,6 +10,10 @@ application = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(application)
 login_manager.login_view = "auth.signin"
+
+# csrf protection
+csrf = CSRFProtect(application)
+csrf.init_app(application)
 
 application.config.from_object('config')
 

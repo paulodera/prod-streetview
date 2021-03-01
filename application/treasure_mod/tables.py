@@ -11,3 +11,5 @@ class TreasureTable(Table):
     description = Col('Description')
     time = Col('Time (Minutes)')
     is_active = Col('Active')
+    activate = LinkCol('Toggle','treasure.activate', url_kwargs=dict(id='id'))
+    edit = LinkCol('Edit', 'treasure.edit', url_kwargs=dict(id='id'))

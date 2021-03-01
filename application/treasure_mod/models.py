@@ -58,25 +58,27 @@ class Treasure(Base):
     is_active = db.Column(
         db.Boolean,
         nullable=False,
-        default=True
+        default=False
     )
 
     player_leaderboard = db.relationship("PlayerLeaderBoard", backref="treasure")
+    clue = db.relationship("Clue", backref="treasure")
 
-    def __int__(self, name, time, description, is_active):
+    def __int__(self, name, time, description, tag_line_1, tag_line_2, is_active):
         self.name = name
         self.time = time
         self.description = description
-        self.is_active = True
+        self.tag_line_1 = tag_line_1
+        self.tag_line_2 = tag_line_2
+        self.is_active = False
 
     """
     def __repr__(self):
         return "<Treasure %r>" % self.name
     """
-
+    
     def save(self):
         db.session.add(self)
-        db.session.commit()
 
     def update(self, data):
         for key, item in data.items():
@@ -90,15 +92,23 @@ class Treasure(Base):
     @classmethod
     def get_all(cls):
         return cls.query.all()
+    
+    @classmethod
+    def get_clue_treasures(cls):
+        return [(x.id, x.name) for x in cls.query.all()]
 
     @classmethod
     def get_active_hunt(cls):
         return cls.query.filter_by(is_active=True).first()
-
+       
     @classmethod
     def get_treasure_details(cls, treasure_id):
         return cls.query.filter_by(id=treasure_id, is_active=True).first()
 
+    @classmethod
+    def get_treasure(cls, treasure_id):
+        return cls.query.filter_by(id=treasure_id).first()
+    
     @classmethod
     def check_hunt_status(cls, treasure_id):
         """

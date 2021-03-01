@@ -1,5 +1,11 @@
 {% extends 'streetview_base.html' %}
 
+{% block navbar %}
+
+    <img src="{{ url_for('static', filename='streetview/images/green_logo.svg') }}" alt="Streetview Safaricom" class="green_logo">
+
+{% endblock %}
+
 {% block hunts %}
 
 <div class="lightbox" id="hunt">

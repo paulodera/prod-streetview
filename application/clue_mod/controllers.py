@@ -1,9 +1,14 @@
-from flask import render_template, redirect, flash, g, url_for, Blueprint, jsonify, make_response
-
+from flask import render_template, request, redirect, flash, g, url_for, Blueprint, jsonify, make_response
+from flask_login import login_required
 from application.clue_mod.models import Clue, ClueOptions
+from application.clue_mod.forms import ClueForm, ClueOptionForm
+from application.treasure_mod.models import Treasure
+# helper function
+from application.clue_mod.helpers import save_changes, bool_conversion, save_option
+from application import db
 
 clue_mod = Blueprint('clue', __name__, url_prefix='/clue', template_folder='streetview', static_folder='streetview')
-
+# options_mod = Blueprint('option', __name__, url_prefix='/option', template_folder='clue_options', static_folder='dashboard')
 
 @clue_mod.route('/options/<string:option_id>', methods=['POST', 'GET'])
 def get_clue_options(option_id):
@@ -25,6 +30,132 @@ def half_life(treasure_id):
     return make_response(jsonify(Clue.return_to_start(treasure_id)))
 
 
-@clue_mod.route('/options/first', methods=['POST', 'GET'])
-def get_first_clue():
-    pass
+@clue_mod.route('/', methods=['GET'])
+@login_required
+def get_clue_page():
+    return render_template('clue/clue_table.html')
+
+
+@clue_mod.route('/all', methods=['POST', 'GET'])
+@login_required
+def get_clues():
+    all_clues = Clue.get_all_clues()
+    if all_clues:
+        return make_response(jsonify(all_clues), 200)
+
+
+@clue_mod.route('/edit/<string:id>', methods=['GET', 'POST'])
+def edit(id):
+    """
+    edit clue
+    """
+    clue_check = Clue.get_clue_by_id(id)
+    if clue_check:
+        """
+        data = {
+            'clue_data': clue_check,
+            'treasures': Treasure.get_clue_treasures()
+        }
+        """
+        form = ClueForm(request.form, obj=clue_check)
+        treasures = Treasure.get_clue_treasures()
+        form.treasure_id.choices = treasures
+        
+        # update form data
+        if request.method == 'POST': 
+            if save_changes(clue_check, request.form):
+                flash("Update is successfull", "success")
+                return redirect('/clue')
+            else:
+                flash("An error occured while trying to save", "danger")
+                return redirect('/clue')
+        
+        # open clue edit page
+        return render_template('/clue/edit_clue.html', form=form)
+    
+    else:
+        # clue not found redirect to clue home route with error msg
+        flash("Clue not found", "danger")
+        return redirect('/clue')
+
+
+@clue_mod.route('/new', methods=['GET', 'POST'])
+def new_clue():
+    # open new clue form
+    treasures = Treasure.get_clue_treasures()
+    if request.method == 'GET':
+        form = ClueForm(request.form)
+        form.treasure_id.choices = treasures
+        return render_template('/clue/new_clue.html', form=form)
+
+    elif request.method == 'POST' and form.validate_on_submit():
+        # save clue data
+        clue = Clue()
+        save_changes(clue, request.form)
+        flash("Clue saved successfully", "success")
+        return redirect('/clue')
+
+
+"""
+Options routes on dashboard
+"""
+@clue_mod.route('/option/all', methods=['GET'])
+def get_all_options():
+    """
+    fetch clue options to display on dashboard
+    """
+    all_options = ClueOptions.fetch_all_options()
+    if all_options:
+        return make_response(jsonify(all_options), 200)
+
+
+@clue_mod.route('/option', methods=['GET'])
+def get_options():
+    """
+    render clue options table
+    """
+    return render_template('clue_options/option_table.html')
+
+
+@clue_mod.route('/option/new', methods=['GET', 'POST'])
+def add_new_option():
+    """
+    handle new option; render form or post data
+    """
+     # open new clue option form
+    clues = Clue.get_option_clues()
+    if request.method == 'GET':
+        form = ClueOptionForm(request.form)
+        form.clue_id.choices = clues
+        return render_template('/clue_options/new_option.html', form=form)
+
+    elif request.method == 'POST' and form.validate_on_submit():
+        # save clue option data
+        option = ClueOptions()
+        save_option(option, request.form)
+        flash("Clue option saved successfully", "success")
+        return redirect('/clue/option')
+
+
+@clue_mod.route('/option/edit/<string:id>', methods=['POST', 'GET'])
+def edit_option(id):
+    option_check = ClueOptions.fetch_option_details(id)
+    if option_check:
+        form = ClueOptionForm(request.form, obj=option_check)
+        clues = Clue.get_option_clues()
+        form.clue_id.choices = clues
+
+        # update form data
+        if request.method == 'POST':
+            save_option(option_check, form):
+            flash("Update is successful", "success")
+            return redirect('/clue/option')
+        
+        # open clue option edit page
+        return render_template('/clue_options/edit_option.html', form=form)
+    
+    else:
+        # clue not found redirect to clue home route with error msg
+        flash("Clue option not found", "danger")
+        return redirect('/clue/option')
+

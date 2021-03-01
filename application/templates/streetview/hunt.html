@@ -100,6 +100,12 @@
 
 {% endblock %}
 
+{% block navbar %}
+
+<img src="{{ url_for('static', filename='streetview/images/green_logo.svg') }}" alt="Streetview Safaricom" class="green_logo">
+
+{% endblock %}
+
 {% block hunts %}
 
 <div class="lightbox" id="hunt">
@@ -328,7 +334,7 @@ const relocatePlayer = (optionId) => {
 
         } else {
             if(data.is_correct === false)
-            {
+            { // add stray paths for deductible calculation at final score
                 let stray_path = localStorage.getItem('stray_path');
                 stray_path++;
                 localStorage.setItem('stray_path', stray_path);
@@ -342,7 +348,7 @@ const relocatePlayer = (optionId) => {
 }
 
 /****
- * display user form on completion
+ * display user form on game completion
  */
 const registerUser = () => {
     $('#message_block').hide()
@@ -381,7 +387,7 @@ const stopGame = () => {
 
 
 /*******
- * set new coordinates
+ * set new coordinates upon relocation
  * @param coordinates
  * @param slug
  * @param next
@@ -407,6 +413,7 @@ const splitCoordinates = (coordinates) => {
 
 /***
  * return user to second clue
+ * on halflife
  */
 const startHalfLife = () => {
     get_next_clue(true);
@@ -531,7 +538,7 @@ $('#userForm').submit((e) => {
           }
           let msg = "<h2>"+result.message+"</h2>";
           $('.alert').html(msg);
-          $(".alert").fadeIn(2000);
+          $('.alert').fadeIn(2000);
           $('.alert').fadeOut(5000, () => {
             window.location.href = "{{ url_for('start') }}";
           });

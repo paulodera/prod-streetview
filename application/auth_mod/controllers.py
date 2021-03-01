@@ -29,11 +29,11 @@ def signin():
 
             login_user(user)
 
-            flash('Welcome %s' % user.username)
+            flash('Welcome %s' % user.username, 'success')
 
             return redirect('/treasure')
 
-        flash('Wrong username and/or password', 'error-message')
+        flash('Wrong username and/or password', 'danger')
 
     return render_template('auth/signin.html', form=form)
 

@@ -1,0 +1,131 @@
+<!-- treasure/new_template.html -->
+
+{% extends 'base.html' %}
+
+{% block sidebar %}
+
+    <li class="nav-item active">
+        <a class="nav-link" href="javascript:;">
+          <i class="material-icons">map</i>
+          <p>Treasures</p>
+        </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="javascript:;">
+        <i class="material-icons">search</i>
+        <p>Clues</p>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="javascript:;">
+        <i class="material-icons">list</i>
+        <p>Options</p>
+      </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="javascript:;">
+          <i class="material-icons">leaderboard</i>
+          <p>Leaderboard</p>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="javascript:;">
+          <i class="material-icons">settings</i>
+          <p>Profile</p>
+        </a>
+    </li>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="col-md-8 col-12 mr-auto ml-auto">
+    <div class="card">
+        <div class="card-header card-header-icon card-header-success">
+          <div class="card-icon">
+            <i class="material-icons">add</i>
+          </div>
+          <h4 class="card-title">Add New Clue</h4>
+        </div>
+        <div class="card-body">
+          <form class="form" method="POST" action="/clue/new" role="form" accept-charset="UTF-8">
+            
+            {{ form.csrf_token }}
+            
+              <div class="col-md-8 mr-auto ml-auto">
+                <div class="form-group">
+                  <label class="bmd-label-floating">Treasure</label>
+                  {{ form.treasure_id(class_="selectpicker") }}
+                </div>
+              </div>
+
+              <br/>
+              <div class="col-md-8 mr-auto ml-auto">
+                <div class="form-group">
+                  <label class="bmd-label-floating">Clue description</label>
+                  {{ form.description(class_="form-control") }}
+                </div>
+              </div>
+              <br/>
+              
+              <h4 class="title">Points</h4>
+              <label>{{ form.startpoint.label }}</label>
+
+                {% for start in form.startpoint %}
+                    <div class="form-check">
+                      <label class="form-check-label">{{ start.label }}
+                        {{ start(class_="form-check-input") }}
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
+                {% endfor %}
+
+              <label>{{ form.endpoint.label }}</label>
+                {% for end in form.endpoint %}
+                <div class="form-check">
+                  <label class="form-check-label">{{ end.label }}
+                    {{ end(class_="form-check-input") }}
+                    <span class="circle">
+                      <span class="check"></span>
+                    </span>
+                  </label>
+                </div>
+                {% endfor%}
+
+                <label for="">{{ form.is_correct.label }}</label>
+                {% for correct in form.is_correct %}
+                <div class="form-check">
+                  <label class="form-check-label">{{ correct.label }}
+                    {{ correct(class_="form-check-input") }}
+                    <span class="circle">
+                      <span class="check"></span>
+                    </span>
+                  </label>
+                </div>
+                {% endfor%}
+              
+              <div class="form-group">
+                <label class="bmd-label-floating">Clue slugs (comma separated)</label>
+                {{ form.slug(class_="form-control") }}
+              </div>
+              <br/>
+              <div class="form-group">
+                <label class="bmd-label-floating">Marker Position</label>
+                {{ form.marker_pos(class_="form-control") }}
+              </div>
+            
+              {{ form.submit(class_="btn btn-success btn-lg pull-right") }}
+
+            <div class="clearfix"></div>
+          </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
