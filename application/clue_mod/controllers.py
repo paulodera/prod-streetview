@@ -45,30 +45,23 @@ def get_clues():
 
 
 @clue_mod.route('/edit/<string:id>', methods=['GET', 'POST'])
+@login_required
 def edit(id):
     """
     edit clue
     """
     clue_check = Clue.get_clue_by_id(id)
     if clue_check:
-        """
-        data = {
-            'clue_data': clue_check,
-            'treasures': Treasure.get_clue_treasures()
-        }
-        """
         form = ClueForm(request.form, obj=clue_check)
-        treasures = Treasure.get_clue_treasures()
-        form.treasure_id.choices = treasures
         
         # update form data
-        if request.method == 'POST': 
-            if save_changes(clue_check, request.form):
-                flash("Update is successfull", "success")
-                return redirect('/clue')
-            else:
-                flash("An error occured while trying to save", "danger")
-                return redirect('/clue')
+        if request.method == 'POST' and form.validate_on_submit(): 
+            save_changes(clue_check, form)
+            flash("Update is successfull", "success")
+            return redirect('/clue')
+        else:
+            flash("An error occured while trying to save", "danger")
+            return redirect('/clue')
         
         # open clue edit page
         return render_template('/clue/edit_clue.html', form=form)
@@ -80,21 +73,26 @@ def edit(id):
 
 
 @clue_mod.route('/new', methods=['GET', 'POST'])
+@login_required
 def new_clue():
-    # open new clue form
-    treasures = Treasure.get_clue_treasures()
+    """
+    new clue handler
+    """
+    form = ClueForm(request.form)
+    
     if request.method == 'GET':
-        form = ClueForm(request.form)
+        treasures = Treasure.get_clue_treasures()
         form.treasure_id.choices = treasures
         return render_template('/clue/new_clue.html', form=form)
-
-    elif request.method == 'POST' and form.validate_on_submit():
-        # save clue data
-        clue = Clue()
-        save_changes(clue, request.form)
-        flash("Clue saved successfully", "success")
-        return redirect('/clue')
-
+    else:
+        if form.validate_on_submit():
+            clue = Clue()
+            save_changes(clue, form, new=True)
+            flash("Clue saved successfully", "success")
+            return redirect('/clue')
+        else:
+            flash('Something went wrong', 'danger')
+            return redirect('/clue/new')
 
 """
 Options routes on dashboard
@@ -110,6 +108,7 @@ def get_all_options():
 
 
 @clue_mod.route('/option', methods=['GET'])
+@login_required
 def get_options():
     """
     render clue options table
@@ -118,21 +117,22 @@ def get_options():
 
 
 @clue_mod.route('/option/new', methods=['GET', 'POST'])
+@login_required
 def add_new_option():
     """
     handle new option; render form or post data
     """
      # open new clue option form
     clues = Clue.get_option_clues()
+    form = ClueOptionForm(request.form)
     if request.method == 'GET':
-        form = ClueOptionForm(request.form)
         form.clue_id.choices = clues
         return render_template('/clue_options/new_option.html', form=form)
 
     elif request.method == 'POST' and form.validate_on_submit():
         # save clue option data
         option = ClueOptions()
-        save_option(option, request.form)
+        save_option(option, form, new=True)
         flash("Clue option saved successfully", "success")
         return redirect('/clue/option')
 

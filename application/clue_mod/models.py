@@ -171,7 +171,7 @@ class ClueOptions(Base):
         self.name = name
         self.slug = slug
         self.clue_id = clue_id
-        self.coordinatcoordinates =coordinates
+        self.coordinates = coordinates
         self.points = points
         self.is_correct = is_correct
 
@@ -190,6 +190,15 @@ class ClueOptions(Base):
     
     def save(self):
         db.session.add(self)
+    
+    def update(self, data):
+        for key, item in data.items():
+            setattr(self, key, item)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
     
     @classmethod
     def get_clue_options(cls, clue_id):

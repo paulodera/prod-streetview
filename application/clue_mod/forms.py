@@ -18,11 +18,11 @@ class ClueForm(Form):
     )
     startpoint = RadioField(
         'Startpoint',
-         choices=[(True, 'Yes'), (False, 'No')]
+         choices=[('True', 'Yes'), ('False', 'No')]
     )
     endpoint = RadioField(
         'Endpoint',
-        choices=[(True, 'Yes'), (False, 'No')]
+        choices=[('True', 'Yes'), ('False', 'No')]
     )
     marker_pos = StringField(
         'Clue Coordinates',
@@ -30,7 +30,7 @@ class ClueForm(Form):
     )
     is_correct = RadioField(
         'Is this path correct',
-         choices=[(True, 'Yes'), (False, 'No')]
+         choices=[('True', 'Yes'), ('False', 'No')]
     )
     slug = StringField(
         'Clue slugs',

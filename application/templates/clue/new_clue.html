@@ -52,6 +52,17 @@
           <h4 class="card-title">Add New Clue</h4>
         </div>
         <div class="card-body">
+          <h4 class="card-description">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                <ul style="list-style: none; text-align: center;">
+                  {% for category, message in messages %}
+                    <li class="text-{{ category }} font-weight-bold" >{{ message }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            {% endwith %}
+          </h4>
           <form class="form" method="POST" action="/clue/new" role="form" accept-charset="UTF-8">
             
             {{ form.csrf_token }}
