@@ -77,14 +77,14 @@ class Clue(Base):
 
     clue_options = db.relationship("ClueOptions", backref="clue")
 
-    def __init__(self, treasure_id, description, endpoint, startpoint, slug, marker_pos, is_correct):
-        self.treasure_id = treasure_id
-        self.description = description
-        self.endpoint = endpoint
-        self.startpoint = startpoint
-        self.slug = slug
-        self.marker_pos = marker_pos
-        self.is_correct = is_correct
+    # def __init__(self, treasure_id, description, endpoint, startpoint, slug, marker_pos, is_correct):
+    #     self.treasure_id = treasure_id
+    #     self.description = description
+    #     self.endpoint = endpoint
+    #     self.startpoint = startpoint
+    #     self.slug = slug
+    #     self.marker_pos = marker_pos
+    #     self.is_correct = is_correct
 
     def serialize(self):
         return {
@@ -167,13 +167,13 @@ class ClueOptions(Base):
         default=False
     )
 
-    def __init__(self, name, clue_id, slug, coordinates, points, is_correct):
-        self.name = name
-        self.slug = slug
-        self.clue_id = clue_id
-        self.coordinates = coordinates
-        self.points = points
-        self.is_correct = is_correct
+    # def __init__(self, name, clue_id, slug, coordinates, points, is_correct):
+    #     self.name = name
+    #     self.slug = slug
+    #     self.clue_id = clue_id
+    #     self.coordinates = coordinates
+    #     self.points = points
+    #     self.is_correct = is_correct
 
     def serialize(self):
         return {

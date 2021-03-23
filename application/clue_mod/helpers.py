@@ -14,12 +14,14 @@ def save_changes(clue, form, new=False):
     :return:
     """
     # convert clue to array
+    clue.treasure_id = form.treasure_id.data
     clue.description = form.description.data
     clue.endpoint = bool_conversion(form.endpoint.data)
     clue.startpoint = bool_conversion(form.startpoint.data)
     clue.slug = form.slug.data.split(",")
     clue.marker_pos = form.marker_pos.data
     clue.is_correct = bool_conversion(form.is_correct.data)
+    
     
     if new:
         clue.id = uuid.uuid4()
@@ -32,6 +34,7 @@ def save_option(option, form, new=False):
     """
     save new clue option
     """
+    option.clue_id = form.clue_id.data
     option.name = form.name.data
     option.slug = form.slug.data
     option.coordinates = form.coordinates.data

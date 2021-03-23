@@ -64,13 +64,14 @@ class Treasure(Base):
     player_leaderboard = db.relationship("PlayerLeaderBoard", backref="treasure")
     clue = db.relationship("Clue", backref="treasure")
 
-    def __int__(self, name, time, description, tag_line_1, tag_line_2, is_active):
-        self.name = name
-        self.time = time
-        self.description = description
-        self.tag_line_1 = tag_line_1
-        self.tag_line_2 = tag_line_2
-        self.is_active = False
+    # def __init__(self, name, time, description, tag_line_1, objective, tag_line_2, is_active):
+    #     self.name = name
+    #     self.time = time
+    #     self.objective = objective
+    #     self.description = description
+    #     self.tag_line_1 = tag_line_1
+    #     self.tag_line_2 = tag_line_2
+    #     self.is_active = False
 
     """
     def __repr__(self):

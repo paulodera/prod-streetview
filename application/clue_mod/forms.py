@@ -1,5 +1,7 @@
 from flask_wtf import Form #, RecaptchaField
 from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField, RadioField, IntegerField
+from application.treasure_mod.models import Treasure
+from application.clue_mod.models import Clue
 from wtforms.validators import DataRequired
 
 
@@ -9,8 +11,8 @@ class ClueForm(Form):
     """
     treasure_id = SelectField(
         'Treasure',
-        coerce = str,
-        validators = [DataRequired()] 
+        choices=Treasure.get_clue_treasures(),
+        validators = [DataRequired()]
     )
     description = TextAreaField(
         'Description',
@@ -45,7 +47,7 @@ class ClueOptionForm(Form):
     """
     clue_id = SelectField(
         'Clue',
-        coerce = str,
+        choices=Clue.get_option_clues(),
         validators = [DataRequired()] 
     )
     name = StringField(

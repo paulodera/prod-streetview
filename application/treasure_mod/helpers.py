@@ -20,9 +20,11 @@ def save_changes(treasure, form, new=False):
     treasure.objective = form.objective.data
     treasure.tag_line_1 = form.tag_line_1.data
     treasure.tag_line_2 = form.tag_line_2.data
+    
 
     if new:
         treasure.id = uuid.uuid4()
+        treasure.is_active = False
         treasure.save()
     
     db.session.commit()

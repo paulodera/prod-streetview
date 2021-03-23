@@ -55,13 +55,14 @@ def edit(id):
         form = ClueForm(request.form, obj=clue_check)
         
         # update form data
-        if request.method == 'POST' and form.validate_on_submit(): 
-            save_changes(clue_check, form)
-            flash("Update is successfull", "success")
-            return redirect('/clue')
-        else:
-            flash("An error occured while trying to save", "danger")
-            return redirect('/clue')
+        if request.method == 'POST':
+            if form.validate_on_submit(): 
+                save_changes(clue_check, form)
+                flash("Update is successfull", "success")
+                return redirect('/clue')
+            else:
+                flash("An error occured while trying to save", "danger")
+                return redirect('/clue')
         
         # open clue edit page
         return render_template('/clue/edit_clue.html', form=form)
@@ -81,8 +82,8 @@ def new_clue():
     form = ClueForm(request.form)
     
     if request.method == 'GET':
-        treasures = Treasure.get_clue_treasures()
-        form.treasure_id.choices = treasures
+        # treasures = Treasure.get_clue_treasures()
+        # form.treasure_id.choices = treasures
         return render_template('/clue/new_clue.html', form=form)
     else:
         if form.validate_on_submit():
@@ -91,7 +92,7 @@ def new_clue():
             flash("Clue saved successfully", "success")
             return redirect('/clue')
         else:
-            flash('Something went wrong', 'danger')
+            flash(form.errors, "danger")
             return redirect('/clue/new')
 
 """
@@ -122,22 +123,24 @@ def add_new_option():
     """
     handle new option; render form or post data
     """
-     # open new clue option form
-    clues = Clue.get_option_clues()
+    # open new clue option form
+    # clues = Clue.get_option_clues()
     form = ClueOptionForm(request.form)
     if request.method == 'GET':
-        form.clue_id.choices = clues
+        # form.clue_id.choices = clues
         return render_template('/clue_options/new_option.html', form=form)
 
-    elif request.method == 'POST' and form.validate_on_submit():
-        # save clue option data
-        option = ClueOptions()
-        save_option(option, form, new=True)
-        flash("Clue option saved successfully", "success")
-        return redirect('/clue/option')
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            # save clue option data
+            option = ClueOptions()
+            save_option(option, form, new=True)
+            flash("Clue option saved successfully", "success")
+            return redirect('/clue/option')
 
 
 @clue_mod.route('/option/edit/<string:id>', methods=['POST', 'GET'])
+@login_required
 def edit_option(id):
     option_check = ClueOptions.fetch_option_details(id)
     if option_check:

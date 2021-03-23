@@ -31,7 +31,7 @@ def new_treasure():
             flash('Treasure saved successfully', 'success')
             return redirect('/treasure')
         else:
-            flash('Something went wrong', 'danger')
+            flash(form.errors, 'danger')
             return redirect('/treasure/new')
 
 

@@ -18,6 +18,7 @@ time, mark, audio, video {
   font: inherit;
   vertical-align: baseline; }
 
+  
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
@@ -332,7 +333,17 @@ img {
   border-bottom: 1px solid #ffffff;
   overflow: hidden;
   position: relative;
-  color: #ffffff; }
+  color: #ffffff;
+  position: relative; }
+  .second_header::before {
+    background-color: #ffffff;
+    opacity: 0.4;
+    top: 0;
+    left: 0;
+    width: 100%;
+    bottom: 0;
+    position: absolute;
+    content: ''; }
   .second_header .item_left, .second_header .item_center, .second_header .item_right {
     text-align: center;
     position: relative;
@@ -366,7 +377,7 @@ img {
       transform: rotate(180deg);
       margin-top: -9px; }
     .second_header .item_center .disable {
-      opacity: 0.3; }
+      opacity: 0.6; }
   .second_header .item_left {
     float: left; }
   .second_header .item_right {
