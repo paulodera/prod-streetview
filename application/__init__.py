@@ -10,7 +10,6 @@ application = Flask(__name__)
 content_policies = {
     'default-src': [
         '\'self\'',
-        '\'unsafe-inline\'',
         '*.bootstrapcdn.com',   
     ],
     'script-src': [
@@ -27,7 +26,7 @@ content_policies = {
         '*',
         '\'unsafe-eval\'',
     ],
-    'style-src-elem': [
+    'style-src': [
         '\'self\'',
         '\'unsafe-inline\'',
         'fonts.googleapis.com',
