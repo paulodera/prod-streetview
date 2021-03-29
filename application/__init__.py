@@ -3,9 +3,50 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect
-
+from flask_talisman import Talisman
 
 application = Flask(__name__)
+
+content_policies = {
+    'default-src': [
+        '\'self\'',
+        '\'unsafe-inline\'',
+        '*.bootstrapcdn.com',   
+    ],
+    'script-src': [
+        '\'self\'',
+        '\'unsafe-eval\'',
+        '\'unsafe-inline\'',
+        'sha256-56unDXjk2ShFPvYp44q8qpaNjzpU2ut/TGooXPhreOk=',
+        'cdnjs.cloudflare.com',
+        'maps.googleapis.com',
+        'maps.gstatic.com',
+    ],
+    'img-src': [
+        'data:',
+        '*',
+        '\'unsafe-eval\'',
+    ],
+    'style-src-elem': [
+        '\'self\'',
+        '\'unsafe-inline\'',
+        'fonts.googleapis.com',
+        'maxcdn.bootstrapcdn.com'
+    ],
+    'object-src':'\'self\'',
+    'font-src': [
+        '\'self\'',
+        'fonts.googleapis.com',
+        'fonts.gstatic.com',
+        'maxcdn.bootstrapcdn.com'
+    ],
+    'connect-src': [
+        '\'self\'',
+        '*.google-analytics.com'
+    ]
+}
+Talisman(application, content_security_policy=content_policies)
+
 
 login_manager = LoginManager()
 login_manager.init_app(application)

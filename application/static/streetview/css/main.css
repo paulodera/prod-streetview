@@ -611,6 +611,25 @@ img {
   font-size: 13px;
   line-height: 20px; }
 
+.input_w button, .input_w input {
+  border-radius: 20px;
+  width: 100%; }
+.input_w input {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  margin-top: 7px;
+  background-color: #25963e; }
+.input_w button {
+  background-color: #ffffff;
+  padding-top: 2px;
+  cursor: pointer;
+  text-align: center;
+  -webkit-transition: .3s;
+  transition: .3s;
+  font-family: "Futura";
+  border: 0; }
+  .input_w button:hover {
+    background-color: #FBBF18; }
+
 .saf_music {
   position: absolute;
   z-index: 100;
@@ -837,6 +856,15 @@ img {
       right: 20px;
       top: 40px; }
 
+  .input_w li {
+    margin-bottom: 24px; }
+  .input_w input {
+    height: 42px;
+    padding: 6px; }
+  .input_w button {
+    line-height: 42px;
+    height: 42px; }
+
   .saf_music {
     bottom: 30px; } }
 @media only screen and (max-width: 767px) {
@@ -940,6 +968,15 @@ img {
     .block_content::after {
       right: 20px;
       top: 40px; }
+
+  .input_w li {
+    margin-bottom: 18px; }
+  .input_w input {
+    height: 36px;
+    padding: 6px; }
+  .input_w button {
+    line-height: 36px;
+    height: 36px; }
 
   .saf_music {
     bottom: 80px; }
