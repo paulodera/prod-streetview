@@ -46,22 +46,24 @@
 
 <div class="content_section" style="background-image: url('/static/streetview/images/Screenshot_1.jpg')">
     <div class="content_pod">
-        <h1>{{ data['treasure']['tag_line_1'] }}<span>{{ data['treasure']['tag_line_2'] }}</span></h1>
-        <h2>Objective: {{ data['treasure']['objective'] }}</h2>
+        <div class="street_name">
+            <h1>{{ data['treasure']['tag_line_1'] }}<span>{{ data['treasure']['tag_line_2'] }}</span></h1>
+            <h2>Objective: {{ data['treasure']['objective'] }}</h2>
 
-        {% if data['treasure'] %}
-        <ul>
-            <li>01</li>
-            <li>
-                <div>Time {{ data['treasure']['time'] }}.00</div>
-            </li>
-            <li>
-                <a href="{{ url_for('hunt.start_hunt', treasure_id=data['treasure']['id']) }}" class="btn_green">
-                    <span>Play now</span>
-                    <img src="{{ url_for('static', filename='streetview/images/arrow.svg') }}"/>
-                </a>
-            </li>
-        </ul>
+            {% if data['treasure'] %}
+            <ul>
+                <li>01</li>
+                <li>
+                    <div>Time {{ data['treasure']['time'] }}.00</div>
+                </li>
+                <li>
+                    <a href="{{ url_for('hunt.start_hunt', treasure_id=data['treasure']['id']) }}" class="btn_green">
+                        <span>Play now</span>
+                        <img src="{{ url_for('static', filename='streetview/images/arrow.svg') }}"/>
+                    </a>
+                </li>
+            </ul>
+        </div>
         {% else %}
             <br/>
             <h2>No hunts available today.</h2>
@@ -70,4 +72,14 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block soundtrack %}
+<div class="saf_music">
+    <audio id="bg_music" src="{{ url_for('static', filename='streetview/music/pedestrians.mp3') }}" loop=""></audio>
+    <button class="music_btn">
+        <div class="play"></div >
+        <div  class="pause"></div >
+    </button>
+</div>
 {% endblock %}

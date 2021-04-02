@@ -64,13 +64,10 @@
             
         {% endblock %}
 	<!--	</div>-->
-	<div class="saf_music">
-        <audio id="bg_music" src="{{ url_for('static', filename='streetview/music/TwendeTukiuke.mp3') }}" loop=""></audio>
-        <button class="music_btn">
-            <div class="play"></div >
-            <div  class="pause"></div >
-        </button>
-    </div>
+	{% block soundtrack %}
+		
+	{% endblock %}
+	
 	<ul class="footer_section">
 		<li>
 			<div class="copyright">Copyright 2020. All rights reserved</div>
@@ -83,10 +80,12 @@
 		<h2>01</h2>
 		<h3><span>WELCOME</span>How to play</h3>
 		<ul style="line-height: 20px;">
-			<li>1) The homepage will greet eligible participants with a menu and short description of what the challenges do.
-			<li>2) On pressing the ‘Get started’ button, the eligible participant will be taken directly to the available hunt of the day. Here, they will be shown the objective and the time available to complete.</li>  
-			<li>3) The clock will start ticking and the first level is going to be loaded. They will then be presented with a question and 3 multiple choice answers. Depending on the answer, they will either be on the correct path or a detour. Every choice will have weighted points.</li>
-			<li>4) If on the correct path, the eligible participant will finish the hunt. We will then show the participant their points, and ‘Redeem Prize’ button. In order to redeem the points, we’ll need to capture their Name and Phone numbe. If on a detour, the time will most likely run our and they will need to start the hunt again.</li>
+			<li>1) Once you get to the homepage, you’ll find a menu and short description of what to expect in the challenges.
+			<li>2) Click the ‘Get Started’ button to go to the hunt of the day where you’ll find the objective and time available to complete it.</li>  
+			<li>3) The clock will start ticking and the first level will be loaded. You’ll be presented with a question and 3 multiple choice answers. Depending on your answer, you’ll either be on the correct path or detour.</li>
+			<li>4) If you’re on a correct path, you’ll finish the hunt! Check out your score and click the ‘Redeem Prize’ button to redeem your points.</li>
+			<li>5) If you’re on a detour, when time runs out you’ll need to start the hunt again</li>
+			<li>6) Always remember, every choice has weighted options.</li>
 		</ul>
 		<div class="content_pod-a">
 
@@ -108,24 +107,24 @@
 		<h2>04</h2>
 		<h3><span>OUR</span>T&Cs</h3>
 		<div class="content_pod-a" style="text-align: left;">
-			Participation in the StreetView Treasure Hunt game will be subject to the following Terms and Conditions:<br>
-			1) INTRODUCTION <br>
-			Easter holidays, which will be celebrated from the 2nd of April 2021, presents a good opportunity for Kenyans to exercise their minds through games. In this light, Safaricom, in conjunction with Google StreetView* has launched a virtual StreetView Treasure Hunt game to mark this season. Participants will be able to exercise their minds and use their ‘Street smarts’ in a bid to win. <br>
-			2) ELIGIBILITY <br>
-			The game is open to all Safaricom and Non Safaricom registered line users; ages 12 and above. <br>
-			3) GAME INSTRUCTIONS <br>
-			<b>.</b> The homepage will greet eligible participants with a menu and short description of what the challenges do.<br>
-			<b>.</b> On pressing the ‘Get started’ button, the eligible participant will be taken directly to the available hunt of the day. Here, they will be shown the objective and the time available to complete.<br>
-			<b>.</b> The clock will start ticking and the first level is going to be loaded. They will then be presented with a question and 3 multiple choice answers. Depending on the answer, they will either be on the correct path or a detour. Every choice will have weighted points.<br>
-			<b>.</b> If on the correct path, the eligible participant will finish the hunt. We will then show the participant their points, and ‘Redeem Prize’ button. In order to redeem the points, we’ll need to capture their Name and Phone number. If on a detour, the time will most likely run our and they will need to start the hunt again.<br>
-			4) HOW TO WIN <br>
-			To win, eligible participants must complete the game most accurately, within the least time possible. <br>
-			The first 10 people out of all participants to finish the game within the least time will be recognized. <br>
-			5) GAME VALIDITY <br>
-			The game will officially open for eligible participants from 0800 hrs of 2nd April 2021 and will be closed at 0000 hours of 5th April 2021 <br>
-			6)	OTHER TERMS <br>
-			By agreeing to the above terms, the eligible participant is hereby giving Safaricom the rights to use their personal data i.e Name and Phone number, for the purposes of determining the top scorers. <br>
-			In the event of the eligible participant landing in the Top 10 Scoreboard, they are also subject to being featured on Safaricom’s social media pages and/or sites which include but are not limited to: Instagram, Twitter, Facebook.
+			<p>Participation in the StreetView Treasure Hunt game will be subject to the following Terms and Conditions:</p>
+			<h5>1) INTRODUCTION</h5>
+			<p>Safaricom, in conjunction with Google StreetView* has launched a virtual StreetView journey allowing you to explore Kenya in a different way. Get ready to exercise your mind and use your streetsmarts.</p>
+			<h5>2) ELIGIBILITY</h5>
+			<p>The game is open to all Safaricom and Non Safaricom registered line users; ages 12 and above.</p>
+			<h5>3) GAME INSTRUCTIONS</h5>
+			<ol>
+					<li>The homepage will greet eligible participants with a menu and short description of what the challenges are.</li>
+					<li>The clock will start ticking and the first level is going to be loaded. Participants will be presented with a question and 3 multiple choice answers. Depending on the answer, they will either be on the correct path or a detour. Every choice will have weighted points. </li>
+					<li>If on the correct path, the eligible participant will finish the journey. We will then show the participant their points, and ‘View Your Tally’ button. To view total points, we’ll need to capture the participants Name and Phone number. If on a detour, the time will most likely run out and they will need to start the journey again.</li>
+			</ol>
+			<h5>4) HOW TO COMPLETE THE JOURNEY</h5>
+			<p>To get to your destination, eligible participants must select the correct answers to complete the journey within the least time possible. </p>
+			<h5>5) RUNTIME</h5>
+			<p>The journey will officially open for eligible participants from 0800 hrs of 1sth April 2021 and will be closed on 0000 hours of 5th April 2021</p>
+			<h5>6) OTHER TERMS</h5>
+			<p>By agreeing to the above terms, the eligible participant is hereby giving Safaricom the rights to use their personal data i.e Name and Phone number, for the purposes of populating the leader board. <br>
+				In the event of the eligible participant landing in the Top 10 positions on the leader board, they are also subject to be featured on Safaricom’s social media pages and/or sites which include but are not limited to: Instagram, Twitter, Facebook.</p>
 		</div>
     </div>
 	<!--  Google Maps Plugin    -->

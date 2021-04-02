@@ -215,6 +215,16 @@
 
 {% endblock %}
 
+{% block soundtrack %}
+<div class="saf_music">
+    <audio id="bg_music" src="{{ url_for('static', filename='streetview/music/pedestrians.mp3') }}" loop=""></audio>
+    <button class="music_btn">
+        <div class="play"></div >
+        <div  class="pause"></div >
+    </button>
+</div>
+{% endblock %}
+
 {% block scripts %}
 <script>
 /***
@@ -288,20 +298,34 @@ initialize();
  * **************************************
  * Player relocation, to a different scene
  */
+
+let bonusRound = false;
+
 const relocatePlayer = (optionId) => {
     // get option details
     let endpoint = "/clue/options/" + optionId;
     let optionsInfo = $.get( endpoint, (data) => {
-        if(data.was_endpoint && data.is_correct)
-        {
-            // the user got the last checkpoint correct, display message
+        if(data.was_endpoint && data.is_correct && data.was_bonus === false){
+            // the user got the last checkpoint correct, display last bonus question
+            add_points(data.points);
+            let points = localStorage.getItem('points');
+            let treasure_id = localStorage.getItem('treasure_id');
+            
+            bonusRound = true;
+            relocator(data.coordinates, data.slug);
+
+            $('#message_block').removeClass(); //bonus Question to have a green background
+            $('#message_block').addClass("content_block-three success block_content");
+        
+        }else if(data.was_bonus) {
+            // bonus question answered, display results
             add_points(data.points);
             $('#message_block').removeClass();
             $('#message_block').addClass("content_block-three success block_content");
             let points = localStorage.getItem('points');
             let timeRemaining = $("#timer").text();
             localStorage.setItem('time', timeRemaining);
-            let level_scrore = get_final_score(timeRemaining);
+            let level_score = get_final_score(timeRemaining);
             clearInterval(x);
             let html = `
             <div class="icon icon_1"></div>
@@ -312,20 +336,24 @@ const relocatePlayer = (optionId) => {
                 <div class="pod">
                     <h2>SUCCESS</h2>
                     <p style="font-weight: bold;">{{data.treasure['description']}}</p>
-                    <h4>Level score: <span>${level_scrore}</span>points</h4>
+                    <h4>Level score: <span>${level_score}</span>points</h4>
                     <h4><span>${timeRemaining}</span>time remaining</h4>
-                    <a onclick="registerUser()">Redeem Prize</a>
+                    <a onclick="registerUser()">Enter Leaderboard</a>
                 </div>
             </div>
             `;
             $('#message_block').html(html);
-            relocator(data.coordinates, data.slug, false);
+            
+            // relocator(data.coordinates, data.slug, false);
 
         } else if(data.was_endpoint && data.is_correct === false) {
             // dead-end, start half life
             add_points(data.points);
+            addStrayPath();
             let points = localStorage.getItem('points');
             let treasure_id = localStorage.getItem('treasure_id');
+            
+            relocator(data.coordinates, data.slug);
 
             $('#message_block').removeClass();
             $('#message_block').addClass("content_block-three failure block_content");
@@ -335,9 +363,7 @@ const relocatePlayer = (optionId) => {
         } else {
             if(data.is_correct === false)
             { // add stray paths for deductible calculation at final score
-                let stray_path = localStorage.getItem('stray_path');
-                stray_path++;
-                localStorage.setItem('stray_path', stray_path);
+               addStrayPath();
             }
             add_points(data.points);
             relocator(data.coordinates, data.slug);
@@ -347,6 +373,11 @@ const relocatePlayer = (optionId) => {
 
 }
 
+const addStrayPath = () => {
+    let stray_path = localStorage.getItem('stray_path');
+    stray_path++;
+    localStorage.setItem('stray_path', stray_path);
+}
 /****
  * display user form on game completion
  */
@@ -430,13 +461,16 @@ const get_next_clue = (halfLife=false, slug=null) => {
     let endpoint = '/clue/options/';
     let treasure_id = localStorage.getItem('treasure_id');
     let clue_no = localStorage.getItem('clue');
+    let div;
 
-    if(halfLife === true) {
+    if(halfLife === true) { 
+        div = `<h2>Wrong path! Try again.</h2><br>`; //inform user s/he is on the wrong path
         endpoint = endpoint + 'half-life/' + treasure_id;
-        next_clue = 2;
+        next_clue = 2; // return back to second clue
     } else {
         endpoint = endpoint + treasure_id + '/' + slug;
-        next_clue = parseInt(clue_no) + 1
+        div = `<p></p>`;
+        next_clue = bonusRound ? "Bonus Clue!!" : `CLUE # ${parseInt(clue_no) + 1}`;
     }
 
     $.get( endpoint,  (data) => {
@@ -449,7 +483,8 @@ const get_next_clue = (halfLife=false, slug=null) => {
             <div class="icon icon_4"></div>
             <div class="wrapper">
                 <div class="pod">
-                    <h2>CLUE #${next_clue}</h2>
+                    ${div}
+                    <h2>${next_clue}</h2>
                      <h3>${data.description}</h3>`;
                      $.each(data['options'], function(key, item) {
                          html += `<a onclick="relocatePlayer('${item['id']}')">${item['name']}</a>`;
@@ -481,7 +516,8 @@ const add_points = (points) => {
  * @returns {number}
  */
 const get_final_score = (time_spent) => {
-        let level_score = 5;
+        let base_score = 5;
+        let level_score = parseInt(localStorage.getItem('points'));
         let deductibles = 0;
 		let time_spent_text = time_spent.replace(/[^0-9]/g,'');
 		let time_array = Array.from(time_spent_text);
@@ -495,9 +531,11 @@ const get_final_score = (time_spent) => {
       		seconds_spent = seconds_spent + (minutes_spent * 60);
       	}
 
-		let total_points =  Math.max(0, seconds_spent) * level_score;
+        // each second saved is multiplied by the base score; 5
+        // add the level score on gametray to avoid ties
+		let total_points =  (Math.max(0, seconds_spent) * base_score) + level_score;
       	let stray_path = localStorage.getItem('stray_path');
-      	if(stray_path > 0){
+      	if(stray_path > 0){ // deduct from total points for each wrong path passed
       	    deductibles = stray_path * 2;
         }
       	total_points = total_points - deductibles;

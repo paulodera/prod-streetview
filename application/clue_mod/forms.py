@@ -34,6 +34,10 @@ class ClueForm(Form):
         'Is this path correct',
          choices=[('True', 'Yes'), ('False', 'No')]
     )
+    is_bonus = RadioField(
+        'Bonus path',
+         choices=[('True', 'Yes'), ('False', 'No')]
+    )
     slug = StringField(
         'Clue slugs',
         validators=[DataRequired()]

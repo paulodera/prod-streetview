@@ -110,6 +110,18 @@
                 </div>
                 {% endfor%}
 
+                <label for="">{{ form.is_bonus.label }}</label>
+                {% for bonus in form.is_bonus %}
+                <div class="form-check">
+                  <label class="form-check-label">{{ bonus.label }}
+                    {{ bonus(class_="form-check-input") }}
+                    <span class="circle">
+                      <span class="check"></span>
+                    </span>
+                  </label>
+                </div>
+                {% endfor%}
+
               <br>
               <div class="form-group">
                 <label class="bmd-label-floating">Clue slugs (comma separated)</label>

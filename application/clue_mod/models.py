@@ -75,6 +75,12 @@ class Clue(Base):
         default=False
     )
 
+    is_bonus = db.Column(
+        db.Boolean,
+        default=False
+    )
+
+
     clue_options = db.relationship("ClueOptions", backref="clue")
 
     # def __init__(self, treasure_id, description, endpoint, startpoint, slug, marker_pos, is_correct):
@@ -166,7 +172,6 @@ class ClueOptions(Base):
         db.Boolean,
         default=False
     )
-
     # def __init__(self, name, clue_id, slug, coordinates, points, is_correct):
     #     self.name = name
     #     self.slug = slug
@@ -185,7 +190,8 @@ class ClueOptions(Base):
             'points': self.points,
             'coordinates': self.coordinates,
             'is_correct': self.is_correct,
-            'was_endpoint': self.clue.endpoint
+            'was_endpoint': self.clue.endpoint,
+            'was_bonus': self.clue.is_bonus # if the clue was a bonus, add extra points if user gets it right.
         }
     
     def save(self):

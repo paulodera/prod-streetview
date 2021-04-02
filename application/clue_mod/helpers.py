@@ -20,6 +20,7 @@ def save_changes(clue, form, new=False):
     clue.startpoint = bool_conversion(form.startpoint.data)
     clue.slug = form.slug.data.split(",")
     clue.marker_pos = form.marker_pos.data
+    clue.is_bonus = bool_conversion(form.is_bonus.data)
     clue.is_correct = bool_conversion(form.is_correct.data)
     
     
