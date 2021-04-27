@@ -189,7 +189,7 @@
                 <h3>{{ data.clue['description'] }}</h3>
                 {% for opt in data.options %}
                     <a onclick="relocatePlayer( '{{ opt['id'] }}' )">
-                        Go to {{ opt['name'] }}
+                        {{ opt['name'] }}
                     </a>
                 {% endfor %}
             </div>
@@ -470,7 +470,7 @@ const get_next_clue = (halfLife=false, slug=null) => {
     } else {
         endpoint = endpoint + treasure_id + '/' + slug;
         div = `<p></p>`;
-        next_clue = bonusRound ? "Bonus Clue!!" : `CLUE # ${parseInt(clue_no) + 1}`;
+        next_clue = bonusRound ? "Bonus!!" : parseInt(clue_no) + 1;
     }
 
     $.get( endpoint,  (data) => {
@@ -484,7 +484,7 @@ const get_next_clue = (halfLife=false, slug=null) => {
             <div class="wrapper">
                 <div class="pod">
                     ${div}
-                    <h2>${next_clue}</h2>
+                    <h2>Clue #${next_clue}</h2>
                      <h3>${data.description}</h3>`;
                      $.each(data['options'], function(key, item) {
                          html += `<a onclick="relocatePlayer('${item['id']}')">${item['name']}</a>`;

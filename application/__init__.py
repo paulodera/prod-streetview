@@ -99,5 +99,8 @@ application.register_blueprint(hunt_module)
 application.register_blueprint(clue_module)
 application.register_blueprint(player_module)
 
-
 db.create_all()
+
+# if __name__ == '__main__':
+#     db.create_all()-
+#     application.run(host='0.0.0.0')
