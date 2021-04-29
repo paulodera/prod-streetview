@@ -660,9 +660,9 @@ ul.content_pod-b li {
       display: block;
       background-size: cover; }
       .saf_music button div.play {
+        display: none;
         background-image: url("../images/play_icon.svg"); }
       .saf_music button div.pause {
-        display: none;
         background-image: url("../images/pause_icon.svg"); }
 
 .content_block-three {

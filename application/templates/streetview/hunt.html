@@ -217,10 +217,10 @@
 
 {% block soundtrack %}
 <div class="saf_music">
-    <audio id="bg_music" src="{{ url_for('static', filename='streetview/music/pedestrians.mp3') }}" loop=""></audio>
+    <audio id="bg_music" src="{{ url_for('static', filename='streetview/music/pedestrians.mp3') }}" loop="" autoplay></audio>
     <button class="music_btn">
-        <div class="play"></div >
-        <div  class="pause"></div >
+        <div class="pause"></div>
+        <div class="play"></div>
     </button>
 </div>
 {% endblock %}
