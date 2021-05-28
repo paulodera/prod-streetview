@@ -186,7 +186,7 @@
         <div class="wrapper">
             <div class="pod">
                 <h2 id="clue_ident">CLUE #1</h2>
-                <h3>{{ data.clue['description'] }}</h3>
+                <p style="font-size: 20px; text-align: justify-all">{{ data.clue['description'] }}</p>
                 {% for opt in data.options %}
                     <a onclick="relocatePlayer( '{{ opt['id'] }}' )">
                         {{ opt['name'] }}
@@ -198,6 +198,7 @@
 
     <div class="form-popup center" id="userForm">
         <form action="" class="form-container">
+            <input type="hidden" name="csrf_token" id="csrf_token" value="{{ csrf_token() }}"/>
             <h1>Register Details</h1>
 
             <input type="text" name="name" id="name" placeholder="Enter your name" required/>
@@ -254,14 +255,15 @@ let x = setInterval(function() {
   let distance = countDownDate - now;
   let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
   let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  let milliSeconds = Math.floor((distance % 1000));
 
-  $("#timer").html(minutes + "m " + seconds + "s ");
+  $("#timer").html(minutes + "m " + seconds + "s " + milliSeconds + "ms ");
 
   if (distance < 0) { // time has ended, stop the game!
     clearInterval(x);
     stopGame();
   }
-}, 1000);
+}, 1);
 
 
 /***
@@ -335,9 +337,8 @@ const relocatePlayer = (optionId) => {
             <div class="wrapper">
                 <div class="pod">
                     <h2>SUCCESS</h2>
-                    <p style="font-weight: bold;">{{data.treasure['description']}}</p>
-                    <h4>Level score: <span>${level_score}</span>points</h4>
-                    <h4><span>${timeRemaining}</span>time remaining</h4>
+                    <p style="font-size: 20px; text-align: justify-all">{{data.treasure['description']}}</p>
+                    <h4>Level score: <span>${level_score}</span></h4>
                     <a onclick="registerUser()">Enter Leaderboard</a>
                 </div>
             </div>
@@ -404,7 +405,6 @@ const stopGame = () => {
     <div class="wrapper">
         <div class="pod">
             <h2>TIME’S UP</h2>
-            <h3>Sorry your time run out</h3>
             <h4><span>00:00:00</span></h4>
             <h4><span>${points}</span>points</h4>
             <a href="/hunt/${treasure_id}">Start the hunt again</a>
@@ -485,7 +485,7 @@ const get_next_clue = (halfLife=false, slug=null) => {
                 <div class="pod">
                     ${div}
                     <h2>Clue #${next_clue}</h2>
-                     <h3>${data.description}</h3>`;
+                     <p style="font-size: 20px; text-align: justify-all">${data.description}</p>`;
                      $.each(data['options'], function(key, item) {
                          html += `<a onclick="relocatePlayer('${item['id']}')">${item['name']}</a>`;
                      });
@@ -516,31 +516,35 @@ const add_points = (points) => {
  * @returns {number}
  */
 const get_final_score = (time_spent) => {
-        let base_score = 5;
+        let base_score = 0.01;
+        let total_time_remaining;
+        let minutes_spent;
+		let seconds_spent;
+		let milliseconds_spent;
         let level_score = parseInt(localStorage.getItem('points'));
         let deductibles = 0;
-		let time_spent_text = time_spent.replace(/[^0-9]/g,'');
-		let time_array = Array.from(time_spent_text);
-		let minutes_spent = time_array[0];
-		let seconds_spent = time_array[1];
-		if(time_array.length > 2) {
-			seconds_spent = parseInt(seconds_spent+''+time_array[2]);
-		}
+        //trim whitespace in string
+        time_spent = time_spent.replace(/\s+/g, "");
+        //trim the timer texts
+		let time_spent_text = time_spent.replace(/m|s|ms/g,',');
+        let time_array = time_spent_text.split(',');
+	    /*Convert both minutes and seconds to milliseconds.
+        Each hunt needn't be more than 59 minutes.*/
+		minutes_spent = parseInt(time_array[0]) * (60 * 1000);
+		seconds_spent = parseInt(time_array[1]) * 1000;
+		milliseconds_spent = parseInt(time_array[2]);
+		total_time_remaining = minutes_spent + seconds_spent + milliseconds_spent;
 
-      	if(minutes_spent > 0) {
-      		seconds_spent = seconds_spent + (minutes_spent * 60);
-      	}
-
-        // each second saved is multiplied by the base score; 5
-        // add the level score on gametray to avoid ties
-		let total_points =  (Math.max(0, seconds_spent) * base_score) + level_score;
+        /*Total milliseconds saved is the player's total points.
+        Level score is added on top to avoid ties*/
+		let total_points =  (Math.max(0, total_time_remaining) * base_score) + level_score;
       	let stray_path = localStorage.getItem('stray_path');
       	if(stray_path > 0){ // deduct from total points for each wrong path passed
-      	    deductibles = stray_path * 2;
+      	    deductibles = stray_path * 5;
         }
       	total_points = total_points - deductibles;
       	localStorage.setItem('points', total_points);
-      	return total_points;
+      	return parseInt(total_points);
 }
 
 
@@ -552,6 +556,7 @@ $('#userForm').submit((e) => {
 
     let username = $('#name').val();
     let phone = $('#phone').val();
+    let csrf_token = $('#csrf_token').val();
     let points = localStorage.getItem('points');
     let time = localStorage.getItem('time');
     let treasure_id = localStorage.getItem('treasure_id');
@@ -559,16 +564,34 @@ $('#userForm').submit((e) => {
     let data = {
         'username': username,
         'phone': phone,
+        'csrf_token': csrf_token,
         'points': points,
         'time': time,
         'treasure_id': treasure_id
     }
 
-    $.ajax({
-      type: "POST",
-      url: '/player/register',
-      data: data,
-      success: (result) => {
+    $.post( "/player/register", data)
+      .done(function( result ) {
+         if(result.status === 1) {
+              $('.alert').addClass('alert-danger');
+          } else {
+              $('.alert').addClass('alert-success');
+          }
+          let msg = "<h2>"+result.message+"</h2>";
+          $('.alert').html(msg);
+          $('.alert').fadeIn(2000);
+          $('.alert').fadeOut(5000, () => {
+            window.location.href = "{{ url_for('start') }}";
+          });
+    });
+
+    /*$.ajax({
+        type: "POST",
+        url: '/player/register',
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        data: data,
+        success: (result) => {
           if(result.status === 1) {
               $('.alert').addClass('alert-danger');
           } else {
@@ -580,9 +603,9 @@ $('#userForm').submit((e) => {
           $('.alert').fadeOut(5000, () => {
             window.location.href = "{{ url_for('start') }}";
           });
-      },
-      dataType: 'json'
-    });
+        }
+    });*/
+
     localStorage.clear();
     e.preventDefault();
 
