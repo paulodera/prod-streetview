@@ -69,9 +69,10 @@ def not_found(error):
 
 from application.auth_mod.models import Auth
 from application.treasure_mod.models import Treasure
-from application.player_mod.models import PlayerLeaderBoard
 from application.clue_mod.models import Clue
 from application.clue_mod.models import ClueOptions
+from application.player_mod.models import Player
+from application.player_mod.models import PlayerLeaderBoard
 from application.auth_mod.controllers import auth_mod as auth_module
 from application.treasure_mod.controllers import treasure_mod as treasure_module
 from application.hunt_mod.controllers import hunt_mod as hunt_module

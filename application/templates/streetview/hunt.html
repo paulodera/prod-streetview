@@ -2,86 +2,7 @@
 
 {% block styles %}
 <style>
-    /* The popup form - hidden by default */
-    .form-popup {
-      display: none;
-      position: fixed;
-      bottom: 0;
-      /*right: 15px;*/
-      /*border: 3px solid #f1f1f1;*/
-      z-index: 9;
-    }
-
-    .center {
-       position: absolute;
-       top: 50%;
-       left: 50%;
-       transform: translate(-50%, -50%);
-   }
-
-    /* Add styles to the form container */
-    .form-container {
-      max-width: 300px;
-      padding: 10px;
-      background-color: white;
-    }
-
-    /* Full-width input fields */
-    .form-container input[type=text], .form-container {
-      width: 100%;
-      overflow-x: hidden;
-      padding-bottom: 20px;
-      margin: 5px 0 22px 0;
-      border: none;
-      background: #f1f1f1;
-    }
-
-    /* When the inputs get focus, do something */
-    .form-container input[type=text]:focus, .form-container input[type=password]:focus {
-      background-color: #ddd;
-      outline: none;
-    }
-
-    /* Set a style for the submit/login button */
-    .form-container .btn {
-      background-color: #2cb34a;
-      color: white;
-      padding: 16px 20px;
-      border: none;
-      cursor: pointer;
-      width: 100%;
-      margin-bottom:10px;
-      opacity: 0.8;
-    }
-
-    /* Add some hover effects to buttons */
-    .form-container .btn:hover, .open-button:hover {
-      opacity: 1;
-    }
-
-    .alert {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: white;
-        height: 20px;
-        width: 300px;
-        display: none;
-        font-size: large;
-        padding: 30px;
-        text-align: center;
-        z-index: 9;
-    }
-
-    .alert-success {
-        background-color: #2cb34a;
-    }
-
-    .alert-danger {
-        background-color: #ed1c23;
-    }
-
+   
     /*.closebtn {
       margin-left: 15px;
       color: white;
@@ -186,32 +107,32 @@
         <div class="wrapper">
             <div class="pod">
                 <h2 id="clue_ident">CLUE #1</h2>
-                <p style="font-size: 20px; text-align: justify-all">{{ data.clue['description'] }}</p>
+                <p style="font-size: 16px; text-align: justify-all">{{ data.clue['description'] }}</p>
                 {% for opt in data.options %}
-                    <a onclick="relocatePlayer( '{{ opt['id'] }}' )">
+                    <a onclick="relocatePlayer( '{{ opt['id'] }}' )" style="cursor: pointer;">
                         {{ opt['name'] }}
                     </a>
                 {% endfor %}
             </div>
         </div>
     </div>
+    <div class="alert" role="alert"></div>
+    <div class="form-popup center" id="userForm" style="position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);z-index: 9;">
+    <form action="" class="form-container">
+        <input type="hidden" id="csrf_token" name="csrf_token" value="{{ csrf_token() }}">
+        <h1>Register Details</h1>
 
-    <div class="form-popup center" id="userForm">
-        <form action="" class="form-container">
-            <input type="hidden" name="csrf_token" id="csrf_token" value="{{ csrf_token() }}"/>
-            <h1>Register Details</h1>
+        <input type="text" name="name" id="name" placeholder="Enter your name" required="">
 
-            <input type="text" name="name" id="name" placeholder="Enter your name" required/>
+        <input type="text" name="phone" id="phone" placeholder="Enter phone number" required="">
 
-            <input type="text" name="phone" id="phone" placeholder="Enter phone number" required/>
+        <button type="submit" class="btn">Register Me</button>
+    </form>
 
-            <button type="submit" class="btn">Register Me</button>
-        </form>
-    </div>
-
-    <div class="alert">
-        <!-- <span class="closebtn" onclick="closeMsg()">&times;</span>-->
-    </div>
+   
 </div>
 
 {% endblock %}
@@ -220,8 +141,8 @@
 <div class="saf_music">
     <audio id="bg_music" src="{{ url_for('static', filename='streetview/music/pedestrians.mp3') }}" loop="" autoplay></audio>
     <button class="music_btn">
-        <div class="pause"></div>
         <div class="play"></div>
+        <div class="pause"></div>
     </button>
 </div>
 {% endblock %}
@@ -406,6 +327,7 @@ const stopGame = () => {
         <div class="pod">
             <h2>TIME’S UP</h2>
             <h4><span>00:00:00</span></h4>
+            <br/>
             <h4><span>${points}</span>points</h4>
             <a href="/hunt/${treasure_id}">Start the hunt again</a>
         </div>
@@ -485,9 +407,9 @@ const get_next_clue = (halfLife=false, slug=null) => {
                 <div class="pod">
                     ${div}
                     <h2>Clue #${next_clue}</h2>
-                     <p style="font-size: 20px; text-align: justify-all">${data.description}</p>`;
+                     <p style="font-size: 16px; text-align: justify-all">${data.description}</p>`;
                      $.each(data['options'], function(key, item) {
-                         html += `<a onclick="relocatePlayer('${item['id']}')">${item['name']}</a>`;
+                         html += `<a onclick="relocatePlayer('${item['id']}')" style="cursor: pointer;">${item['name']}</a>`;
                      });
             html += `
                 </div>
@@ -564,33 +486,22 @@ $('#userForm').submit((e) => {
     let data = {
         'username': username,
         'phone': phone,
-        'csrf_token': csrf_token,
-        'points': points,
+        'points': parseInt(points),
         'time': time,
         'treasure_id': treasure_id
     }
-
-    $.post( "/player/register", data)
-      .done(function( result ) {
-         if(result.status === 1) {
-              $('.alert').addClass('alert-danger');
-          } else {
-              $('.alert').addClass('alert-success');
-          }
-          let msg = "<h2>"+result.message+"</h2>";
-          $('.alert').html(msg);
-          $('.alert').fadeIn(2000);
-          $('.alert').fadeOut(5000, () => {
-            window.location.href = "{{ url_for('start') }}";
-          });
-    });
-
-    /*$.ajax({
+  
+    $.ajax({
         type: "POST",
         url: '/player/register',
         dataType: 'json',
-        contentType: 'application/json; charset=utf-8',
         data: data,
+        beforeSend: function(xhr, settings){
+            // set csrf token if on same domain
+            if(!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain){
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+            }
+        },
         success: (result) => {
           if(result.status === 1) {
               $('.alert').addClass('alert-danger');
@@ -604,7 +515,7 @@ $('#userForm').submit((e) => {
             window.location.href = "{{ url_for('start') }}";
           });
         }
-    });*/
+    });
 
     localStorage.clear();
     e.preventDefault();

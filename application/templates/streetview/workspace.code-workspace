@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../../.."
+		},
+		{
+			"path": "../../../../streetview"
+		},
+		{
+			"path": "../../../../streetview-db"
+		}
+	],
+	"settings": {}
+}

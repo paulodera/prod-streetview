@@ -77,7 +77,7 @@ class PlayerLeaderBoard(Base):
     )
 
     time = db.Column(
-        db.String(10),
+        db.String(50),
         nullable=False
     )
 

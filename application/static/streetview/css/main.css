@@ -26,28 +26,19 @@ footer, header, hgroup, menu, nav, section {
 body {
   line-height: 1; }
 
-/* width */
 ::-webkit-scrollbar {
-  width: 10px;
+    width: 10px;               /* width of the entire scrollbar */
 }
 
-/* Track */
 ::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 3px grey;
-  border-radius: 10px;
+    box-shadow: inset 0 0 3px grey;
+    border-radius: 10px;
 }
 
-/* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #FBBF18;
-  border-radius: 10px;
+    background: #FBBF18;
+    border-radius: 10px;
 }
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #FBBF18;
-}
-
 
 ol, ul {
   list-style: none; }
@@ -591,21 +582,30 @@ ul.content_pod-b li {
     text-align: center;
     -webkit-transition: .3s;
     transition: .3s;
-    font-family: "Futura"; }
+    font-family: "Futura";
+    font-size: 13px;
+    letter-spacing: 0; }
     .block_content a:hover {
       background-color: #ababab; }
   .block_content h2 {
-    text-transform: uppercase; }
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 3px;
+    margin-bottom: 12px; }
   .block_content h3 {
     font-family: "Futura"; }
   .block_content h4 {
-    font-family: "Futura"; }
+    font-family: "Futura";
+    font-size: 12px;
+    margin-bottom: 18px; }
     .block_content h4 span {
-      display: block; }
+      display: block;
+      font-size: 28px; }
   .block_content .wrapper {
     position: relative; }
   .block_content .pod {
-    text-align: center; }
+    text-align: center;
+    padding: 24px; }
   .block_content::after {
     content: '';
     width: 10px;
@@ -644,8 +644,9 @@ ul.content_pod-b li {
   right: 18px;
   top: 40%; }
 .content_block-two p {
-  font-size: 13px;
-  line-height: 20px; }
+  font-size: 16px;
+  line-height: 20px;
+  margin-bottom: 18px; }
 
 .input_w button, .input_w input {
   border-radius: 20px;
@@ -669,8 +670,9 @@ ul.content_pod-b li {
 .saf_music {
   position: absolute;
   z-index: 100;
-  right: 30px; }
+  right: 20px; }
   .saf_music button {
+    padding: 0;
     background: transparent;
     width: 24px;
     height: 24px;
@@ -767,6 +769,54 @@ ul.content_pod-b li {
       animation-name: bar-scale-sm;
       animation-duration: .9s; }
 
+.form-popup::after, .form-popup::before {
+  content: '';
+  background-color: #FBBF18;
+  position: absolute;
+  display: block; }
+.form-popup::before {
+  height: 10px;
+  left: 40px;
+  bottom: 20px; }
+.form-popup:after {
+  width: 10px;
+  right: 20px;
+  top: 40px; }
+.form-popup form {
+  background-color: #ffffff;
+  display: block;
+  overflow: hidden; }
+  .form-popup form input {
+    border-radius: 20px;
+    border: 1px solid #C4C4C4;
+    width: 100%;
+    height: 36px;
+    text-indent: 12px;
+    box-sizing: content-box;
+    margin-bottom: 18px; }
+  .form-popup form .btn {
+    border-radius: 20px;
+    line-height: 1.1;
+    background-color: #2CB34A;
+    color: #ffffff;
+    padding: 12px;
+    display: block;
+    text-align: center;
+    -webkit-transition: .3s;
+    transition: .3s;
+    font-family: "Futura BQ";
+    border: 0;
+    font-size: 15px;
+    letter-spacing: 1px;
+    width: 100%;
+    cursor: pointer; }
+    .form-popup form .btn:hover {
+      background-color: #228a39; }
+.form-popup h1 {
+  font-family: "Futura";
+  color: #000000;
+  margin-bottom: 18px; }
+
 @media only screen and (min-width: 1024px) {
   .header_section h1 {
     top: 63%;
@@ -797,7 +847,8 @@ ul.content_pod-b li {
         display: block; }
     .content_section .content_pod h2 {
       font-size: 18px;
-      margin-bottom: 24px; }
+      margin-bottom: 24px;
+      line-height: 1.3; }
 
   .footer_section li .google_logo {
     width: 300px; } }
@@ -917,32 +968,38 @@ ul.content_pod-b li {
     bottom: 90px;
     right: 30px; }
     .block_content a {
-      height: 42px;
       border-radius: 20px;
-      line-height: 42px;
-      margin-bottom: 12px; }
-    .block_content h2 {
-      font-size: 12px;
-      letter-spacing: 5px;
+      line-height: 1.1;
+      padding: 12px;
       margin-bottom: 12px; }
     .block_content h3 {
       font-size: 18px;
       line-height: 24px;
       margin-bottom: 18px; }
-    .block_content h4 {
-      font-size: 18px;
-      margin-top: 42px;
-      margin-bottom: 42px; }
-      .block_content h4 span {
-        font-size: 36px; }
     .block_content .wrapper {
       padding: 30px 30px 0; }
     .block_content .pod {
-      width: 210px;
-      padding: 30px; }
+      width: 210px; }
     .block_content::after {
       right: 20px;
       top: 40px; }
+
+  .form-popup {
+    padding: 30px; }
+    .form-popup::before {
+      width: 270px;
+      height: 10px; }
+    .form-popup:after {
+      width: 10px;
+      height: 252px; }
+    .form-popup form {
+      width: 210px;
+      padding: 30px; }
+      .form-popup form input {
+        height: 36px;
+        text-indent: 12px; }
+    .form-popup h1 {
+      font-size: 18px; }
 
   .input_w li {
     margin-bottom: 24px; }
@@ -957,7 +1014,7 @@ ul.content_pod-b li {
     bottom: 42px; }
 
   .saf_music {
-    bottom: 30px; } }
+    bottom: 20px; } }
 @media only screen and (max-width: 767px) {
   .trigger {
     width: 100px; }
@@ -1029,36 +1086,37 @@ ul.content_pod-b li {
     height: 20px; }
 
   .block_content {
-    bottom: 0;
+    bottom: 60px;
     right: 48px; }
     .block_content a {
-      height: 36px;
       border-radius: 20px;
-      line-height: 36px;
+      line-height: 1.1;
+      padding: 12px;
       margin-bottom: 12px;
-      font-size: 10px; }
-    .block_content h2 {
-      font-size: 8px;
-      letter-spacing: 3px;
-      margin-bottom: 12px; }
+      font-size: 11px; }
     .block_content h3 {
       font-size: 13px;
       line-height: 16px;
       margin-bottom: 12px; }
-    .block_content h4 {
-      font-size: 12px;
-      margin-top: 42px;
-      margin-bottom: 42px; }
-      .block_content h4 span {
-        font-size: 24px; }
     .block_content .wrapper {
       padding: 30px 30px 0; }
     .block_content .pod {
-      width: 170px;
-      padding: 24px; }
+      width: 170px; }
     .block_content::after {
       right: 20px;
       top: 40px; }
+
+  .form-popup {
+    padding: 30px; }
+    .form-popup::before {
+      width: 218px; }
+    .form-popup:after {
+      height: 240px; }
+    .form-popup form {
+      width: 170px;
+      padding: 24px; }
+    .form-popup h1 {
+      font-size: 18px; }
 
   .input_w li {
     margin-bottom: 18px; }
@@ -1080,7 +1138,7 @@ ul.content_pod-b li {
     bottom: 84px; }
 
   .saf_music {
-    bottom: 80px; }
+    bottom: 20px; }
 
   .footer_section {
     display: none; } }
@@ -1123,3 +1181,30 @@ ul.content_pod-b li {
     transform: scaleY(11); } }
 
 /*# sourceMappingURL=main.css.map */
+
+ /* The popup form - hidden by default */
+ .form-popup {
+  display: none;
+}
+.alert {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  height: 20px;
+  width: 300px;
+  display: none;
+  font-size: large;
+  padding: 30px;
+  text-align: center;
+  z-index: 9;
+}
+
+.alert-success {
+  background-color: #2cb34a;
+}
+
+.alert-danger {
+  background-color: #ed1c23;
+}
