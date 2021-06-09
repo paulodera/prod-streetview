@@ -13,7 +13,7 @@
     <h3><span>EXPLORE</span>Street hunts</h3>
     <ul class="content_pod-b">
         <li class="default">
-            <a href="#" class="btn_green btn">
+            <a href="{{ url_for('hunt.start_hunt', treasure_id=data['treasure']['id']) }}" class="btn_green btn">
                 <span>PLAY</span>
                 <h6>{{ data['treasure']['name'] }}</h6>
                 <div><img src="{{ url_for('static', filename='streetview/images/arrow.svg') }}" alt=""></div>

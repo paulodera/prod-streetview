@@ -36,7 +36,8 @@
         {% for hunt in data['hunts'] %}
             {% if hunt['is_active'] %}
                 <li class="default">
-                    <a href="#" class="btn_green btn">
+                    <a href="{{ url_for('hunt.start_hunt', treasure_id=hunt['id']) }}" class="btn_green btn">
+                        <span>PLAY</span>
                         <h6>{{ hunt['name'] }}</h6>
                         <div><img src="{{ url_for('static', filename='streetview/images/arrow.svg') }}" alt=""></div>
                     </a>
