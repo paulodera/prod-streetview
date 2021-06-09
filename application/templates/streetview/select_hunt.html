@@ -30,7 +30,7 @@
     {% for x in data['leaderboard']  %}
         <li class="default">
             <a href="#" class="btn_green btn">
-                <span>1</span>
+                <span>{{loop.index}}</span>
                 <h6>{{ x.player.name }}</h6>
                 <div>{{ x.points }}</div>
             </a>
